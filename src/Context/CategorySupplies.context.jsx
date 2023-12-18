@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useLayoutEffect } from "react";
-import { getCategory_suppliesRequest, getOne_Category_suppliesRequest, createCategory_suppliesRequest, disableCategory_suppliesRequest, updateCategory_suppliesRequest, deleteCategory_suppliesRequest } from "../Api/SuppliesCategory.request";
+import { getCategory_suppliesRequest, getOne_Category_suppliesRequest, createCategory_suppliesRequest, disableCategory_suppliesRequest, updateCategory_suppliesRequest, deleteCategory_suppliesRequest } from "../Api/SuppliesCategory.request.js";
 
 const CategorySuppliesContext = createContext();
 

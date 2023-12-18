@@ -54,17 +54,17 @@ function App() {
       <Role>
         <User>
           <Module>
-            {/* <DashboardProvider> */}
+            <DashboardProvider>
               <CategorySupplies>
                 <CategoryProducts>
                   <Product>
                     <Supplies>
                       <Losses>
-                        {/* <ShoppingProvider>
+                        <ShoppingProvider>
                           <SaleProvider>
                             <ProductCategoriesProvider>
                               <ProductProvider>
-                                <Supplier> */}
+                                <Supplier>
                                   <Header />
                                   <Navbar />
                                   {/* <NavbarHeader /> */}
@@ -94,17 +94,17 @@ function App() {
                                       </Route>
                                     </Routes>
                                   </ErrorBoundary>
-                                {/* </Supplier> */}
-                              {/* </ProductProvider> */}
-                            {/* </ProductCategoriesProvider> */}
-                          {/* </SaleProvider> */}
-                        {/* </ShoppingProvider> */}
+                                </Supplier>
+                              </ProductProvider>
+                            </ProductCategoriesProvider>
+                          </SaleProvider>
+                        </ShoppingProvider>
                       </Losses>
                     </Supplies>
                   </Product>
                 </CategoryProducts>
               </CategorySupplies>
-            {/* </DashboardProvider> */}
+            </DashboardProvider>
           </Module>
         </User>
       </Role>

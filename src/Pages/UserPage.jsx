@@ -35,13 +35,13 @@ function UserPage() {
     const [currentPage, setCurrentPage] = useState(1);
 
     useLayoutEffect(() => {
-        getUsers();
+        // getUsers();
+        setCurrentPage(1);
         return async () => {
             const users = await getUsers();
 
             setAllUsers(users)
         }
-        setCurrentPage(1);
     }, []);
 
     const navigateToCreateUser = () => {

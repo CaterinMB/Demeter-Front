@@ -68,7 +68,7 @@ function App() {
                                   <Header />
                                   <Navbar />
                                   {/* <NavbarHeader /> */}
-                                  {/* <ErrorBoundary> */}
+                                  <ErrorBoundary>
                                     <Routes>
                                       <Route path='/' element={<Login />} />
                                       <Route path='/resetPassword' element={<ResetPassword />} />
@@ -93,7 +93,7 @@ function App() {
                                         <Route path='/sales' element={<Sales />} />
                                       </Route>
                                     </Routes>
-                                  {/* </ErrorBoundary> */}
+                                  </ErrorBoundary>
                                 </Supplier>
                               </ProductProvider>
                             </ProductCategoriesProvider>

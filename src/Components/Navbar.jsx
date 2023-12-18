@@ -54,7 +54,7 @@ const Navbar = () => {
                         <li className="pc-item pc-caption">
                             <label>MENÚ</label>
                         </li>
-                        <li className="pc-item">
+                        {/* <li className="pc-item">
                             <button
                                 onClick={() => {
                                     navigate('/dashboard');
@@ -71,7 +71,7 @@ const Navbar = () => {
                                     Dashboard
                                 </span>
                             </button>
-                        </li>
+                        </li> */}
                         <li className="pc-item pc-caption">
                             <span>Gestión de configuración</span>
                         </li>

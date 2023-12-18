@@ -160,7 +160,7 @@ const Navbar = () => {
                                             Insumos
                                         </button>
                                     </li>
-                                    <li
+                                    {/* <li
                                         className="pc-item">
                                         <button
                                             onClick={() => {
@@ -183,7 +183,7 @@ const Navbar = () => {
                                         >
                                             Compras
                                         </button>
-                                    </li>
+                                    </li> */}
                                 </ul>
                             )}
                         </li>
@@ -244,7 +244,7 @@ const Navbar = () => {
                                             Meseros
                                         </button>
                                     </li>
-                                    <li
+                                    {/* <li
                                         className="pc-item">
                                         <button
                                             onClick={() => {
@@ -255,7 +255,7 @@ const Navbar = () => {
                                         >
                                             Venta
                                         </button>
-                                    </li>
+                                    </li> */}
                                 </ul>
                             )}
                         </li>

@@ -60,11 +60,11 @@ function App() {
                   <Product>
                     <Supplies>
                       <Losses>
-                        <ShoppingProvider>
-                          <SaleProvider>
-                            <ProductCategoriesProvider>
-                              <ProductProvider>
-                                <Supplier>
+                        {/* <ShoppingProvider> */}
+                          {/* <SaleProvider> */}
+                            {/* <ProductCategoriesProvider> */}
+                              {/* <ProductProvider> */}
+                                {/* <Supplier> */}
                                   <Header />
                                   <Navbar />
                                   {/* <NavbarHeader /> */}
@@ -80,25 +80,25 @@ function App() {
                                         <Route path='/user' element={<UserPage />} />
                                         <Route path='/category_supplies' element={<SuppliesCategoryPage />} />
                                         <Route path='/supplies' element={<SuppliesPage />} />
-                                        <Route path='/supplier' element={<SupplierPage />} />
-                                        <Route path='/shopping' element={<ShoppingPage />} />
-                                        <Route path='/shop' element={<NewPurchase />} />
+                                        {/* <Route path='/supplier' element={<SupplierPage />} /> */}
+                                        {/* <Route path='/shopping' element={<ShoppingPage />} /> */}
+                                        {/* <Route path='/shop' element={<NewPurchase />} /> */}
                                         <Route path='/category_product' element={<ProductCategoryPage />} />
                                         <Route path='/product' element={<ProductPage />} />
                                         <Route path='/waiter' element={<WaiterPage />} />
                                         <Route path='/alert' element={<Alert />} />
                                         <Route path='/instructions' element={<Instruction />} />
                                         <Route path='/create_product' element={<ProductDetails />} />
-                                        <Route path='/sale' element={<ViewSales></ViewSales>} />
-                                        <Route path='/sales' element={<Sales />} />
+                                        {/* <Route path='/sale' element={<ViewSales></ViewSales>} /> */}
+                                        {/* <Route path='/sales' element={<Sales />} /> */}
                                       </Route>
                                     </Routes>
                                   </ErrorBoundary>
-                                </Supplier>
-                              </ProductProvider>
-                            </ProductCategoriesProvider>
-                          </SaleProvider>
-                        </ShoppingProvider>
+                                {/* </Supplier> */}
+                              {/* </ProductProvider> */}
+                            {/* </ProductCategoriesProvider> */}
+                          {/* </SaleProvider> */}
+                        {/* </ShoppingProvider> */}
                       </Losses>
                     </Supplies>
                   </Product>

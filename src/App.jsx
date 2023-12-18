@@ -54,7 +54,7 @@ function App() {
       <Role>
         <User>
           <Module>
-            <DashboardProvider>
+            {/* <DashboardProvider> */}
               <CategorySupplies>
                 <CategoryProducts>
                   <Product>
@@ -75,7 +75,7 @@ function App() {
                                       <Route path='/newPassword/:idUser' element={<NewPassword />} />
                                       <Route element={<ProtectedRoute />}>
 
-                                        <Route path='/dashboard' element={<DashBoard />} />
+                                        {/* <Route path='/dashboard' element={<DashBoard />} /> */}
                                         <Route path='/setting' element={<RolePage />} />
                                         <Route path='/user' element={<UserPage />} />
                                         <Route path='/category_supplies' element={<SuppliesCategoryPage />} />
@@ -104,7 +104,7 @@ function App() {
                   </Product>
                 </CategoryProducts>
               </CategorySupplies>
-            </DashboardProvider>
+            {/* </DashboardProvider> */}
           </Module>
         </User>
       </Role>

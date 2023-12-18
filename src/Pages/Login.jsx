@@ -32,7 +32,7 @@ function Login() {
 
 	useLayoutEffect(() => {
 
-		if (isAuthenticated) navigate('/dashboard')
+		if (isAuthenticated) navigate('/setting')
 	}, [isAuthenticated])
 
 

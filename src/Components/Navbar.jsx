@@ -54,7 +54,7 @@ const Navbar = () => {
                         <li className="pc-item pc-caption">
                             <label>MENÚ</label>
                         </li>
-                        {/* <li className="pc-item">
+                        <li className="pc-item">
                             <button
                                 onClick={() => {
                                     navigate('/dashboard');
@@ -71,7 +71,7 @@ const Navbar = () => {
                                     Dashboard
                                 </span>
                             </button>
-                        </li> */}
+                        </li>
                         <li className="pc-item pc-caption">
                             <span>Gestión de configuración</span>
                         </li>
@@ -160,7 +160,7 @@ const Navbar = () => {
                                             Insumos
                                         </button>
                                     </li>
-                                    {/* <li
+                                    <li
                                         className="pc-item">
                                         <button
                                             onClick={() => {
@@ -183,7 +183,7 @@ const Navbar = () => {
                                         >
                                             Compras
                                         </button>
-                                    </li> */}
+                                    </li>
                                 </ul>
                             )}
                         </li>
@@ -244,7 +244,7 @@ const Navbar = () => {
                                             Meseros
                                         </button>
                                     </li>
-                                    {/* <li
+                                    <li
                                         className="pc-item">
                                         <button
                                             onClick={() => {
@@ -255,11 +255,11 @@ const Navbar = () => {
                                         >
                                             Venta
                                         </button>
-                                    </li> */}
+                                    </li>
                                 </ul>
                             )}
                         </li>
-                        <li className="pc-item pc-caption">
+                        {/* <li className="pc-item pc-caption">
                             <span>Manuales</span>
                         </li>
                         <li className="pc-item pc-hasmenu">
@@ -279,7 +279,7 @@ const Navbar = () => {
                                     Manuales
                                 </span>
                             </button>
-                        </li>
+                        </li> */}
                     </ul>
                 </div>
             </div>

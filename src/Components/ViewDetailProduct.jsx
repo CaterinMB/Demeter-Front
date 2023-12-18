@@ -4,13 +4,18 @@ import { AiFillDelete } from 'react-icons/ai';
 
 function ViewDetailProduct() {
 
-    const { getDetailProduct, detailP, deleteDetailProduct, CurrentProd } = useProduct();
+    const { getProducts, detailP, deleteDetailProduct, CurrentProd } = useProduct();
 
     useLayoutEffect(() => {
-        getDetailProduct(CurrentProd);
+        getProducts();
     }, []);
 
-    // const detailsArray = Array.isArray(detailP) ? detailP : [];
+    const handleDelete = async (detail) => {
+        await deleteDetailProduct(detail);
+        console.log(detailP); // Verifica si detailP se actualiza correctamente
+    };
+
+    const detailsArray = Array.isArray(detailP) ? detailP : [];
 
     return (
         <div className="table-responsive">
@@ -19,24 +24,24 @@ function ViewDetailProduct() {
                     <tr>
                         <th className="text-center">Insumo</th>
                         <th className="text-center">Cantidad</th>
-                        <th className="text-center">Acción</th>
+                        {/* <th className="text-center">Acción</th> */}
                     </tr>
                 </thead>
                 <tbody>
-                    {detailP.map((detail) => (
+                    {detailsArray.map((detail) => (
                         <tr key={detail.ID_ProductDetail}>
-                            <td>{detail.Supply ? detail.Supply.Name_Supplies : ''}</td>
-                            <td>{detail.Lot_ProductDetail} {detail.Supply.measure}</td>
-                            <td>
+                            <td className="text-center">{detail.Supply ? detail.Supply.Name_Supplies : ''}</td>
+                            <td className="text-center">{detail.Lot_ProductDetail} {detail.Supply.measure}</td>
+                            {/* <td>
                                 <div style={{ display: "flex", alignItems: "center", padding: '3px' }}>
                                     <button
-                                        onClick={() => deleteDetailProduct(detail)}
+                                        onClick={() => handleDelete(detail)}
                                         className={`ml-1 btn btn-icon btn-danger`}
                                     >
                                         <AiFillDelete />
                                     </button>
                                 </div>
-                            </td>
+                            </td> */}
                         </tr>
                     ))}
                 </tbody>

@@ -3,7 +3,6 @@ import Select from 'react-select';
 import Box from "@mui/material/Box";
 import { useForm } from 'react-hook-form';
 import { useUser } from '../Context/User.context.jsx';
-import { useRole } from '../Context/Role.context.jsx';
 
 const style = {
     position: "fixed",
@@ -53,39 +52,14 @@ function UpdateUser({ onClose, userToEdit }) {
     useLayoutEffect(() => {
         register('Document', {
             required: 'El documento es obligatorio',
-            // validate: (value) => {
-            //     const duplicateUser = user.find(
-            //         (users) =>
-            //             users.Document === value &&
-            //             users.ID_User !== userToEdit.ID_User
-            //     );
-
-            //     if (duplicateUser) {
-            //         return 'Este número de documento ya existe.';
-            //     }
-            //     return true;
-            // },
         });
         register('Email', {
             required: 'El correo es obligatorio',
-            // validate: (value) => {
-            //     const duplicateEmail = user.find(
-            //         (users) =>
-            //             users.Email === value &&
-            //             users.ID_User !== userToEdit.ID_User
-            //     );
-
-            //     if (duplicateEmail) {
-            //         return 'Este correo ya existe.';
-            //     }
-            //     return true;
-            // },
         });
     }, [register, user, userToEdit.ID_User]);
 
     const onSubmit = handleSubmit(async (values) => {
         values.Type_Document = selectedType;
-        // values.Role_ID = selectedRole;
 
         updateUser(userToEdit.ID_User, values);
         onClose();

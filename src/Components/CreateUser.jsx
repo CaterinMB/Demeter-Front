@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import Select from 'react-select';
 import Box from "@mui/material/Box";
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { useUser } from '../Context/User.context.jsx';
 import { useRole } from '../Context/Role.context';
 
@@ -39,7 +39,7 @@ const customStyles = {
 };
 
 function CreateUser({ onClose, onCreated }) {
-    const { register, handleSubmit, formState: { errors, isValid }, setError, reset } = useForm();
+    const { control, register, handleSubmit, formState: { errors, isValid }, setError, reset } = useForm();
     const { createUser, user } = useUser();
     const [selectedType, setSelectedType] = useState({ label: 'Seleccione tipo', value: '', isDisabled: true });
     const { role, getRoles } = useRole();
@@ -60,42 +60,12 @@ function CreateUser({ onClose, onCreated }) {
         setSelectRol(selectedOption);
     };
 
-    function removeAccentsAndSpaces(str) {
-        return str
-            .toLowerCase()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f\s]/g, '');
+    // Función para capitalizar la primera letra de cada palabra
+    function capitalizeFirstLetter(string) {
+        return string.replace(/\b\w/g, (match) => match.toUpperCase());
     }
 
     const onSubmit = handleSubmit(async (values) => {
-        // const normalizedInputName = removeAccentsAndSpaces(
-        //     values.Email
-        // );
-        // const normalizedExistingNames = role.map((rol) =>
-        //     removeAccentsAndSpaces(rol.Email)
-        // );
-
-        // const isEmailDuplicate = normalizedExistingNames.includes(
-        //     normalizedInputName
-        // );
-
-        // const isDocumentouplicate = user.some(users => users.Document === values.Document);
-        
-        // if (isDocumentouplicate) {
-        //     setError('Document', {
-        //         type: 'manual',
-        //         message: 'El documento del usuario ya existe.'
-        //     });
-        //     return;
-        // }
-
-        // if (isEmailDuplicate) {
-        //     setError('Email', {
-        //         type: 'manual',
-        //         message: 'El correo del usuario ya existe.'
-        //     });
-        //     return;
-        // }
 
         if (!selectedType || selectedType.value === '') {
             setError('Type_Document', {
@@ -112,6 +82,51 @@ function CreateUser({ onClose, onCreated }) {
             });
             return;
         }
+
+        // Validar y convertir el documento según el tipo seleccionado
+        switch (selectedType.value) {
+            case 'CC':
+                // Validar que el documento tenga solo números y esté entre 8 y 10 dígitos
+                const ccRegex = /^[0-9]+$/;
+                if (!ccRegex.test(values.Document) || values.Document.length < 8 || values.Document.length > 10) {
+                    setError('Document', {
+                        type: 'manual',
+                        message: 'El número de documento no es válido. Debe tener entre 8 y 10 dígitos.'
+                    });
+                    return;
+                }
+                break;
+            case 'CE':
+                // Validar que el documento tenga solo números y sea menor a 12 dígitos
+                const ceRegex = /^[0-9]+$/;
+                if (!ceRegex.test(values.Document) || values.Document.length > 12) {
+                    setError('Document', {
+                        type: 'manual',
+                        message: 'El número de documento no es válido. Debe tener menos de 12 dígitos.'
+                    });
+                    return;
+                }
+                break;
+            case 'PB':
+                // Convertir las letras a minúsculas y validar que el documento tenga 6 números seguidos por 3 letras
+                values.Document = values.Document.substring(0, 6) + values.Document.substring(6).toLowerCase();
+                const pbRegex = /^[0-9]{6}[a-z]{3}$/;
+                if (!pbRegex.test(values.Document)) {
+                    setError('Document', {
+                        type: 'manual',
+                        message: 'El número de documento no es válido. Debe tener 6 números seguidos por 3 letras.'
+                    });
+                    return;
+                }
+                break;
+            default:
+                break;
+        }
+
+        // Capitalizar la primera letra de cada palabra
+        values.Name_User = capitalizeFirstLetter(values.Name_User.trim().toLowerCase());
+        values.LastName_User = capitalizeFirstLetter(values.LastName_User.trim().toLowerCase());
+
 
         values.Type_Document = selectedType.value;
         values.Role_ID = selectRole.value;
@@ -141,20 +156,30 @@ function CreateUser({ onClose, onCreated }) {
                                             <label htmlFor="Type_Document" className="form-label mt-3">
                                                 Tipo de documento: <strong>*</strong>
                                             </label>
-                                            <Select
-                                                options={typeOptions}
-                                                {...register("Type_Document")}
-                                                value={selectedType}
-                                                onChange={(selectedOption) => setSelectedType(selectedOption)}
-                                                styles={customStyles}
-                                                className='form-selects'
-                                                theme={(theme) => ({
-                                                    ...theme,
-                                                    colors: {
-                                                        ...theme.colors,
-                                                        primary: '#e36209',
-                                                    },
-                                                })}
+                                            <Controller
+                                                control={control}
+                                                name="ProductCategory_ID"
+                                                rules={{ required: 'Este campo es obligatorio' }}
+                                                render={({ field }) => (
+                                                    <Select
+                                                        options={typeOptions}
+                                                        {...register("Type_Document")}
+                                                        value={selectedType}
+                                                        onChange={(selectedOption) => {
+                                                            setSelectedType(selectedOption);
+                                                            field.onChange(selectedOption)
+                                                        }}
+                                                        styles={customStyles}
+                                                        className='form-selects'
+                                                        theme={(theme) => ({
+                                                            ...theme,
+                                                            colors: {
+                                                                ...theme.colors,
+                                                                primary: '#e36209',
+                                                            },
+                                                        })}
+                                                    />
+                                                )}
                                             />
                                             {errors.Type_Document && (
                                                 <p className="text-red-500">
@@ -170,17 +195,7 @@ function CreateUser({ onClose, onCreated }) {
                                         </label>
                                         <input
                                             {...register("Document", {
-                                                required: "El documento es obligatorio",
-                                                validate: (value) => {
-                                                    const parsedValue = parseInt(value);
-                                                    if (
-                                                        isNaN(parsedValue) ||
-                                                        parsedValue < 10000000 ||
-                                                        parsedValue > 9999999999
-                                                    ) {
-                                                        return "El número no es valido, debe tener de 8 a 10 caracteres.";
-                                                    }
-                                                }
+                                                required: "El documento es obligatorio"
                                             })}
                                             type="number"
                                             placeholder='N° documento'
@@ -201,12 +216,7 @@ function CreateUser({ onClose, onCreated }) {
                                         </label>
                                         <input
                                             {...register("Name_User", {
-                                                required: "El nombre es obligatorio",
-                                                pattern: {
-                                                    value: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ\s]*[a-záéíóúñ]$/,
-                                                    message:
-                                                        "El nombre del mesero debe tener la primera letra en mayúscula y solo letras."
-                                                }
+                                                required: "El nombre es obligatorio"
                                             })}
                                             type="text"
                                             placeholder='Nombre'
@@ -225,12 +235,7 @@ function CreateUser({ onClose, onCreated }) {
                                         </label>
                                         <input
                                             {...register("LastName_User", {
-                                                required: 'El apellido es obligatorio',
-                                                pattern: {
-                                                    value: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ\s]*[a-záéíóúñ]$/,
-                                                    message:
-                                                        "El apellido del mesero debe tener la primera letra en mayúscula y solo letras."
-                                                }
+                                                required: 'El apellido es obligatorio'
                                             })}
                                             type="text"
                                             placeholder='Apellido'
@@ -251,11 +256,7 @@ function CreateUser({ onClose, onCreated }) {
                                         </label>
                                         <input
                                             {...register("Email", {
-                                                required: 'El correo es obligatorio',
-                                                pattern: {
-                                                    value: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$/,
-                                                    message: 'El correo electrónico no es válido'
-                                                }
+                                                required: 'El correo es obligatorio'
                                             })}
                                             type="email"
                                             placeholder='Correo electrónico'
@@ -274,19 +275,7 @@ function CreateUser({ onClose, onCreated }) {
                                         </label>
                                         <input
                                             {...register("Password", {
-                                                required: 'La contraseña es obligatorio',
-                                                pattern: {
-                                                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)(?=.*\w).*$/,
-                                                    message: 'La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial.'
-                                                },
-                                                minLength: {
-                                                    value: 5,
-                                                    message: 'La contraseña debe tener al menos 5 caracteres'
-                                                },
-                                                maxLength: {
-                                                    value: 35,
-                                                    message: 'La contraseña no puede tener más de 35 caracteres'
-                                                }
+                                                required: 'La contraseña es obligatorio'
                                             })}
                                             type="password"
                                             placeholder='Contraseña'

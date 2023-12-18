@@ -14,4 +14,4 @@ export const getAllProduct = () => axios.get(`/AllProducts`);
 export const getDetailProductRequest = (ID_Product) => axios.get(`/product_detail/${ID_Product}`);
 export const getDetailProductRequest2 = (ID_Product) => axios.get(`/product_detail2/${ID_Product}`);
 export const createDetailPRequest = (datilsP) => axios.post(`/add_details`, datilsP);
-export const deleteDetailProductRequest = (ID_ProductDetail) => axios.get(`/details/${ID_ProductDetail}`);
+export const deleteDetailProductRequest = (ID_ProductDetail) => axios.delete(`/details/${ID_ProductDetail}`);

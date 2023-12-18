@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import Select from 'react-select';
 import Box from "@mui/material/Box";
 import { useForm } from 'react-hook-form';
@@ -9,7 +9,7 @@ const style = {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 400,
+    width: 600,
     bgcolor: "background.paper",
     border: "2px solid #000",
     boxShadow: 24,
@@ -19,7 +19,7 @@ const style = {
 };
 
 function UpdateWaiter({ onClose, waiterToEdit }) {
-    const { register, handleSubmit, formState: { errors } } = useForm({ defaultValues: waiterToEdit });
+    const { register, handleSubmit, setValue, formState: { errors }, setError } = useForm({ defaultValues: waiterToEdit });
     const { updateWaiter, user } = useUser();
     const [selectedType, setSelectedType] = useState(waiterToEdit.Type_Document);
 
@@ -52,27 +52,18 @@ function UpdateWaiter({ onClose, waiterToEdit }) {
     useLayoutEffect(() => {
         register('Document', {
             required: 'El documento es obligatorio',
-            validate: (value) => {
-                const duplicateUser = user.find(
-                    (users) =>
-                        users.Document === value &&
-                        users.ID_User !== userToEdit.ID_User
-                );
-
-                if (duplicateUser) {
-                    return 'Este número de documento ya existe.';
-                }
-                return true;
-            },
         });
-
     }, [register, user, waiterToEdit.ID_User]);
 
     const onSubmit = handleSubmit(async (values) => {
         values.Type_Document = selectedType;
 
-        updateWaiter(waiterToEdit.ID_User, values);
-        onClose();
+        try {
+            await updateWaiter(waiterToEdit.ID_User, values);
+            onClose();  // Agrega esta línea para cerrar la ventana modal después de la actualización
+        } catch (error) {
+            console.error('Error al actualizar el mesero', error);
+        }
     });
 
     const onCancel = () => {
@@ -127,16 +118,6 @@ function UpdateWaiter({ onClose, waiterToEdit }) {
                                         <input
                                             {...register("Document", {
                                                 required: "El documento es obligatorio",
-                                                validate: (value) => {
-                                                    const parsedValue = parseInt(value);
-                                                    if (
-                                                        isNaN(parsedValue) ||
-                                                        parsedValue < 10000000 ||
-                                                        parsedValue > 9999999999
-                                                    ) {
-                                                        return "El número no es valido, debe tener de 8 a 10 caracteres.";
-                                                    }
-                                                }
                                             })}
                                             type="number"
                                             placeholder='N° documento'
@@ -157,12 +138,7 @@ function UpdateWaiter({ onClose, waiterToEdit }) {
                                         </label>
                                         <input
                                             {...register("Name_User", {
-                                                required: "El nombre es obligatorio",
-                                                pattern: {
-                                                    value: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ\s]*[a-záéíóúñ]$/,
-                                                    message:
-                                                        "El nombre del mesero debe tener la primera letra en mayúscula y solo letras."
-                                                }
+                                                required: "El nombre es obligatorio"
                                             })}
                                             type="text"
                                             placeholder='Nombre'
@@ -181,12 +157,7 @@ function UpdateWaiter({ onClose, waiterToEdit }) {
                                         </label>
                                         <input
                                             {...register("LastName_User", {
-                                                required: 'El apellido es obligatorio',
-                                                pattern: {
-                                                    value: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ\s]*[a-záéíóúñ]$/,
-                                                    message:
-                                                        "El apellido del mesero debe tener la primera letra en mayúscula y solo letras."
-                                                }
+                                                required: 'El apellido es obligatorio'
                                             })}
                                             type="text"
                                             placeholder='Apellido'
@@ -207,15 +178,10 @@ function UpdateWaiter({ onClose, waiterToEdit }) {
                                         </label>
                                         <input
                                             {...register("Restaurant", {
-                                                required: 'El restaurante es obligatorio',
-                                                pattern: {
-                                                    value: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ\s]*[a-záéíóúñ]$/,
-                                                    message:
-                                                        "El restaurante al cual pertenece el mesero debe tener la primera letra en mayúscula y solo letras."
-                                                }
+                                                required: 'El restaurante es obligatorio'
                                             })}
-                                            type="email"
-                                            placeholder='Correo electrónico'
+                                            type="text"
+                                            placeholder='Restaurante'
                                             className="form-control"
                                         />
                                         {errors.Restaurant && (

@@ -50,25 +50,12 @@ function CreateWaiter({ onClose, onCreated }) {
         { label: 'Pasaporte', value: 'PB' },
     ];
 
-    // Función para quitar acentos y espacios
-    function removeAccentsAndSpaces(str) {
-        return str
-            .toLowerCase()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f\s]/g, '');
+    // Función para capitalizar la primera letra de cada palabra
+    function capitalizeFirstLetter(string) {
+        return string.replace(/\b\w/g, (match) => match.toUpperCase());
     }
 
     const onSubmit = handleSubmit(async (values) => {
-        // Validar duplicados por documento
-        const isDocumentDuplicate = user.some(waiters => waiters.Document === values.Document);
-
-        if (isDocumentDuplicate) {
-            setError('Document', {
-                type: 'manual',
-                message: 'El documento del usuario ya existe.'
-            });
-            return;
-        }
 
         // Validar tipo de documento seleccionado
         if (!selectedType || selectedType.value === '') {
@@ -119,10 +106,10 @@ function CreateWaiter({ onClose, onCreated }) {
                 break;
         }
 
-        // Convertir nombre, apellido y restaurante a minúsculas y eliminar espacios al inicio y al final
-        values.Name_User = values.Name_User.toLowerCase().trim();
-        values.LastName_User = values.LastName_User.toLowerCase().trim();
-        values.Restaurant = values.Restaurant.toLowerCase().trim();
+        // Capitalizar la primera letra de cada palabra
+        values.Name_User = capitalizeFirstLetter(values.Name_User.trim().toLowerCase());
+        values.LastName_User = capitalizeFirstLetter(values.LastName_User.trim().toLowerCase());
+        values.Restaurant = capitalizeFirstLetter(values.Restaurant.trim().toLowerCase());
 
         // Asignar el tipo de documento al valor seleccionado
         values.Type_Document = selectedType.value;

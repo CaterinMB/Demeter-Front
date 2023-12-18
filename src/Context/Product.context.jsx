@@ -126,8 +126,9 @@ export function Product({ children }) {
             const res = await deleteDetailProductRequest(id)
             if (res.status === 204)
                 setDetailP(detailP.filter(detail => detail.ID_ProductDetail !== id))
+            return (res.data)
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     }
 
@@ -152,7 +153,6 @@ export function Product({ children }) {
     const getProductById = async (id) => {
         try {
             const res = await getProductByIdRequest(id);
-            console.log("res2", res)
             return res.data
         } catch (error) {
             console.log("error", error.message)

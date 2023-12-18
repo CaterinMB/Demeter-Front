@@ -18,7 +18,6 @@ import "../css/landing.css";
 function ProductCategoryPage() {
   const { Category_products, getCategory_products, deleteCategory_products, toggleCategoryProductStatus } = useCategoryProducts();
   const { Product } = useProduct();
-  const [allCategoryProduct, setAllCategoryProduct] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedProductCategoryToDelete, setSelectedProductCategoryToDelete] = useState(null);
@@ -31,13 +30,8 @@ function ProductCategoryPage() {
   const [currentPage, setCurrentPage] = useState(1);
 
   useLayoutEffect(() => {
-    // getCategory_products();
+    getCategory_products();
     setCurrentPage(1);
-    return async () => {
-      const category = await getCategory_products();
-
-      setAllCategoryProduct(category)
-    };
   }, []);
 
   useEffect(() => {
@@ -52,7 +46,7 @@ function ProductCategoryPage() {
     setShowEnabledOnly(!showEnabledOnly);
   };
 
-  const filteredProductsCategory = allCategoryProduct.filter((productCategory) => {
+  const filteredProductsCategory = Category_products.filter((productCategory) => {
     const {
       Name_ProductCategory,
     } = productCategory;

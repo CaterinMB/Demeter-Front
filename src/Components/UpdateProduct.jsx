@@ -70,24 +70,6 @@ function UpdateProduct() {
             label: category.Name_ProductCategory,
         }));
 
-    const onCancel = async () => {
-        // Obtener los datos originales del producto
-        const originalProductData = await getProductById(CurrentProd);
-
-        // Establecer los valores originales en los campos del formulario
-        setValue("Name_Products", originalProductData.Name_Products);
-        setValue("ProductCategory_ID", {
-            value: originalProductData.ProductCategory_ID,
-            label: originalProductData.ProductCategory_Name, // Ajusta esto según la estructura real de tu categoría
-        });
-        setValue("Price_Product", originalProductData.Price_Product);
-        // Restaurar cualquier otro campo que necesites
-
-        // Otra opción: resetear todo el formulario a sus valores originales
-        reset(originalProductData);
-        navigate('/product');
-    };
-
     return (
         <form onSubmit={onSubmit}>
             <div className="control">
@@ -184,12 +166,6 @@ function UpdateProduct() {
                         type="submit"
                     >
                         Confirmar
-                    </button>
-                    <button
-                        onClick={onCancel}
-                        className="btn btn-danger mr-5"
-                    >
-                        Volver
                     </button>
                 </div>
             </div>

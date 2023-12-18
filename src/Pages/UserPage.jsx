@@ -19,7 +19,7 @@ import Box from "@mui/material/Box";
 
 function UserPage() {
     const { user, getUsers, toggleUserStatus, deleteUser } = useUser()
-    const { role } = useRole();
+    const { role, getRoles } = useRole();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [allUsers, setAllUsers] = useState([]);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -36,6 +36,7 @@ function UserPage() {
 
     useLayoutEffect(() => {
         // getUsers();
+        getRoles(),
         setCurrentPage(1);
         return async () => {
             const users = await getUsers();

@@ -142,22 +142,18 @@ export default function UpdateRole({ onClose, roleToEdit }) {
                 <div className="buttonconfirm">
                   <div className="mb-3">
                     <button
-                      className="btn btn-primary"
-                      onClick={onCancel}
-                      type="button"
-                      title='Se cancela el cambio del rol a editar en el sistema'
-                    >
-                      Cancelar
-                    </button>
-
-                    <button
                       className="btn btn-primary mr-5"
                       type="submit"
-                      title='Se guarda el cambio realizado en el rol del sistema.'
                     >
                       Guardar
                     </button>
-
+                    <button
+                      className="btn btn-danger"
+                      onClick={onCancel}
+                      type="button"
+                    >
+                      Cancelar
+                    </button>
                   </div>
                 </div>
               </form>

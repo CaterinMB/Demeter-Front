@@ -219,7 +219,7 @@ function CreateUser({ onClose, onCreated }) {
                                             {...register("Document", {
                                                 required: "El documento es obligatorio"
                                             })}
-                                            type="number"
+                                            type="text"
                                             placeholder='N° documento'
                                             className="form-control"
                                         />

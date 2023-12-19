@@ -15,7 +15,7 @@ import Box from '@mui/material/Box';
 
 function ProductPage() {
   const { product, getProducts, toggleProducStatus, getCurrentProduct, deleteProduct } = useProduct();
-  const { Category_products } = useCategoryProducts();
+  const { Category_products, getCategory_products } = useCategoryProducts();
   const [searchTerm, setSearchTerm] = useState('');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [showEnabledOnly, setShowEnabledOnly] = useState(
@@ -34,6 +34,7 @@ function ProductPage() {
   };
 
   useLayoutEffect(() => {
+    getCategory_products();
     getProducts();
     setCurrentPage(1);
   }, []);

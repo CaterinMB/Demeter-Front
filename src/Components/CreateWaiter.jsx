@@ -54,6 +54,31 @@ function CreateWaiter({ onClose, onCreated }) {
         return string.replace(/\b\w/g, (match) => match.toUpperCase());
     }
 
+    // Función para validar y convertir el número de identidad según el tipo de documento
+    const validateDocument = (value, documentType) => {
+        const trimmedValue = value.trim();
+
+        if (documentType === 'CC') {
+            if (!/^\d{8,12}$/.test(trimmedValue)) {
+                setError('Document', {
+                    type: 'manual',
+                    message: 'El número de documento no es válido. Debe tener entre 8 y 12 dígitos.'
+                });
+                return null;
+            }
+        } else if (documentType === 'CE') {
+            if (!/^\d{1,11}$/.test(trimmedValue)) {
+                setError('Document', {
+                    type: 'manual',
+                    message: 'El número de documento no es válido. Debe tener menos de 12 dígitos.'
+                });
+                return null;
+            }
+        }
+
+        return trimmedValue;
+    };
+
     const onSubmit = handleSubmit(async (values) => {
 
         // Validar tipo de documento seleccionado
@@ -64,6 +89,17 @@ function CreateWaiter({ onClose, onCreated }) {
             });
             return;
         }
+
+        // Validar y convertir el número de documento según el tipo seleccionado
+        const documentType = selectedType.value;
+        const validatedDocument = validateDocument(values.Document, documentType);
+
+        if (validatedDocument === null) {
+            // La validación falló, se ha establecido el error en setError
+            return;
+        }
+
+        values.Document = validatedDocument;
 
         // Capitalizar la primera letra de cada palabra
         values.Name_User = capitalizeFirstLetter(values.Name_User.trim().toLowerCase());
@@ -100,7 +136,7 @@ function CreateWaiter({ onClose, onCreated }) {
                                         </label>
                                         <Controller
                                             control={control}
-                                            name="ProductCategory_ID"
+                                            name="Type_Document"
                                             rules={{ required: 'Este campo es obligatorio' }}
                                             render={({ field }) => (
                                                 <Select
@@ -239,4 +275,4 @@ function CreateWaiter({ onClose, onCreated }) {
     )
 }
 
-export default CreateWaiter
+export default CreateWaiter;

@@ -76,14 +76,13 @@ function WaiterPage() {
     };
 
     const handleCreated = () => {
-        // Vuelve a obtener la lista de meseros después de la creación.
         getWaiters();
     };
 
-    const handleEdit = (waiter) => {
-        setWaiterToEdit(waiter);
-        setIsEditModalOpen(true);
-    };
+    // const handleEdit = (waiter) => {
+    //     setWaiterToEdit(waiter);
+    //     setIsEditModalOpen(true);
+    // };
 
     useLayoutEffect(() => {
         localStorage.setItem('showEnabledOnly', showEnabledOnly);

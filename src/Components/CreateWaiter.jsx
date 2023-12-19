@@ -172,7 +172,7 @@ function CreateWaiter({ onClose, onCreated }) {
                                             Número de identidad: <strong>*</strong>
                                         </label>
                                         <input
-                                            type="number"
+                                            type="text"
                                             {...register("Document", {
                                                 required: "El documento es obligatorio",
                                             })}

@@ -1,118 +1,152 @@
-import React, { useState, useEffect, useLayoutEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { BiEdit } from "react-icons/bi";
-import { AiFillDelete } from "react-icons/ai";
+import { AiOutlineEye, AiFillDelete } from "react-icons/ai";
 import { MdToggleOn, MdToggleOff } from "react-icons/md";
-import { useSupplies } from "../Context/Supplies.context.jsx";
-import { useCategorySupplies } from '../Context/CategorySupplies.context.jsx';
-import CreateSupplies from "../Components/CreateSupplies.jsx";
-import SeeLosses from "../Components/SeeLosses.jsx";
-import CreateLosses from '../Components/CreateLosses.jsx';
-import UpdateSupplies from "../Components/UpdateSupplies.jsx";
-import DeleteSupplies from "../Components/DeleteSupplies.jsx";
+import { useSupplier } from "../Context/Supplier.context";
+import "../css/style.css";
+import "../css/landing.css";
+import "../fonts/cryptofont.css";
+import "../fonts/feather.css";
+import "../fonts/fontawesome.css";
+import "../fonts//material.css";
+import CreateSupplier from "../Components/CreateSupplier.jsx";
+import DeleteSupplier from "../Components/DeleteSupplier.jsx";
+import LinkedSupplier from "../Components/LinkedSupplier.jsx";
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import "../css/style.css";
-import "../css/landing.css";
+import { useUser } from "../Context/User.context.jsx";
 
 
-function SuppliesPage() {
-  const { supplies, getSupplies, deleteSupplies, toggleSupplyStatus } = useSupplies();
-  const { Category_supplies } = useCategorySupplies();
+
+function SupplierPage() {
+  const { supplier, getSupplierByState, updateSupplier, getSupplie, toggleSupplyStatus } = useSupplier();
+  const { existSupplierByEmailOrId } = useUser()
   const [searchTerm, setSearchTerm] = useState("");
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [selectedSupplyToDelete, setSelectedSupplyToDelete] = useState(null);
-  const [selectedSupplyToUpdate, setSelectedSupplyToUpdate] = useState(null);
+  const currentSupplierDataRef = useRef({
+    email: "",
+    document: ""
+  })
+
   const [showEnabledOnly, setShowEnabledOnly] = useState(
     localStorage.getItem("showEnabledOnly") === "true"
   );
-  const ITEMS_PER_PAGE = 7;
-  const [currentPage, setCurrentPage] = useState(1);
-
-  useLayoutEffect(() => {
-    getSupplies();
-  }, []);
 
   useEffect(() => {
     localStorage.setItem("showEnabledOnly", showEnabledOnly);
-    setCurrentPage(1);
   }, [showEnabledOnly]);
+
+
+  useLayoutEffect(() => {
+    getSupplierByState();
+  }, []);
+
+  const onSupplierChangeState = () => {
+    setTimeout(() => {
+      window.location.reload()
+    }, 500)
+  }
+  //funcion para inhabilitar proveedor
+  const status = supplier.State ? "" : "desactivado";
+
+  //función para mostrar solo los habilitdos
+  const handleCheckboxChange = (event) => {
+    setShowEnabledOnly(event.target.checked);
+  };
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
-  const handleCheckboxChange = () => {
-    setShowEnabledOnly(!showEnabledOnly);
-  };
-
-  const filteredSupplies = supplies.filter((supply) => {
+  const filteredSuppliers = supplier.filter((supplierItem) => {
     const {
-      Name_Supplies,
-      State,
-      Unit,
-      Measure,
-      Stock,
-    } = supply;
+      Type_Document,
+      Document,
+      Name_Supplier,
+      Name_Business,
+      Phone,
+      City,
+      Email,
+      State
+    } = supplierItem;
 
-    const supplyCategoryName = Category_supplies.find(
-      (category) => category.ID_SuppliesCategory === supply.SuppliesCategory_ID
-    )?.Name_SuppliesCategory.toLowerCase() || '';
-
-    const isEnabled = State && searchTerm.toLowerCase() !== 'deshabilitado';
 
     if (showEnabledOnly) {
-
-      if (!isEnabled) {
-        return false;
-      }
-
       return (
-        `${Name_Supplies} ${State ? 'Habilitado' : 'Deshabilitado'} ${Unit} ${Measure} ${Stock} ${supplyCategoryName}`
+        supplierItem.State && // Verificar si el proveedor está habilitado
+        `${Type_Document} ${Document} ${Name_Supplier} ${Name_Business} ${City}  ${Phone}  ${Email}`
           .toLowerCase()
           .includes(searchTerm.toLowerCase())
       );
     }
 
+    // Si showEnabledOnly no está marcado, mostrar todos los proveedores que coincidan con la búsqueda
     return (
-      `${Name_Supplies} ${State ? 'Habilitado' : 'Deshabilitado'} ${Unit} ${Measure} ${Stock} ${supplyCategoryName}`
+      `${Type_Document} ${Document} ${Name_Supplier} ${Name_Business} ${City}  ${Phone}  ${Email}`
         .toLowerCase()
         .includes(searchTerm.toLowerCase())
     );
   });
+  //   const searchString =
+  //     `${Type_Document} ${Document} ${Name_Supplier} ${Name_Business} ${Phone} ${City} ${Email} ${State}`.toLowerCase();
+  //   return searchString.includes(searchTerm.toLowerCase());
+  // });
 
-  const enabledSupplies = filteredSupplies.filter((supply) => supply.State);
-  const disabledSupplies = filteredSupplies.filter((supply) => !supply.State);
-  const sortedSupplies = [...enabledSupplies, ...disabledSupplies];
+  //paginación
 
-  const pageCount = Math.ceil(sortedSupplies.length / ITEMS_PER_PAGE);
+  const itemsForPage = 5;
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const visibleSupplies = sortedSupplies.slice(startIndex, endIndex);
+  const enabledUsers = filteredSuppliers.filter((supplier) => supplier.State);
+  const disabledUsers = filteredSuppliers.filter((supplier) => !supplier.State);
+  const sortedUsers = [...enabledUsers, ...disabledUsers];
 
-  const handleDelete = (supply) => {
-    setSelectedSupplyToDelete(supply);
-    setDeleteModalOpen(true);
-  };
+  const pageCount = Math.ceil(sortedUsers.length / itemsForPage);
 
-  const closeDeleteModal = () => {
-    setDeleteModalOpen(false);
-    setSelectedSupplyToDelete(null);
-  };
-
-  const handleUpdateSupply = (supply) => {
-    setSelectedSupplyToUpdate(supply);
-  };
+  const startIndex = (currentPage - 1) * itemsForPage;
+  const endIndex = startIndex + itemsForPage;
+  const visibleUsers = sortedUsers.slice(startIndex, endIndex);
 
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
   };
 
-  const handleLossCreated = () => {
-    getSupplies();
+
+  const onUpdate = (data, id, modalView) => {
+
+    updateSupplier(id, data);
+    modalView(false);
   };
+
+  const onOpenComponent = async (id, { setValue }) => {
+    const supplierById = await getSupplie(id);
+
+    for (const key in supplierById) {
+      setValue(key, supplierById[key]);
+    }
+  };
+
+  const beforeUpdate = async ({ Email, Document }, errorSetter) => {
+    const { existingUser: { Email: e_email }, existUser } = await existSupplierByEmailOrId(Email, Document)
+    const { email } = currentSupplierDataRef.current
+
+    const condition = existUser && email !== e_email
+    if (condition) {
+      errorSetter("Email", {
+        type: "manual",
+        message: "El correo y/o documento del proveedor ya existe."
+      });
+
+      errorSetter("Document", {
+        type: "manual",
+        message: "El correo y/o documento del proveedor ya existe."
+      });
+
+    }
+
+    return !condition
+  }
 
   return (
     <section className="pc-container">
@@ -122,13 +156,12 @@ function SuppliesPage() {
             <div className=" w-100 col-sm-12">
               <div className="card">
                 <div className="card-header">
-                  <h5>Visualización de insumos</h5>
+                  <h5>Visualización del proveedor</h5>
                 </div>
                 <div className="card-body">
-
                   <div className="row">
-                    <div className="col-md-6">
-                      <CreateSupplies />
+                    <div className="col-md-6" title="Presiona para registrar un proveedor">
+                      <CreateSupplier whenSubmit={onSupplierChangeState} />
                     </div>
                     <div className="col-md-6">
                       <div className="form-group">
@@ -140,93 +173,115 @@ function SuppliesPage() {
                           placeholder="Buscador"
                           value={searchTerm}
                           onChange={handleSearchChange}
+                          title="Presiona para buscar el proveedor"
                         />
                       </div>
                     </div>
-                    <div className="form-check ml-4 mt-1">
-                      <input
-                        type="checkbox"
-                        className="form-check-input"
-                        id="showEnabledOnly"
-                        checked={showEnabledOnly}
-                        onChange={handleCheckboxChange}
-                        title="Este interruptor sirve para visualizar únicamente los insumos habilitados."
-                      />
-                      <label className="form-check-label" htmlFor="showEnabledOnly">
-                        Mostrar solo habilitados
-                      </label>
-                    </div>
                   </div>
 
-                  <div className="card-body">
+                  <div className="form-check ml-4 mt-1" >
+                    <input
+                      type="checkbox"
+                      title='Presiona para mostrar solo las compras habilitadas'
+                      className="form-check-input"
+                      id="showEnabledOnly"
+                      checked={showEnabledOnly}
+                      onChange={handleCheckboxChange}
+                    />
+                    <label className="form-check-label" htmlFor="showEnabledOnly">
+                      Mostrar solo habilitados
+                    </label>
+                  </div>
+
+                  <div className="card-body table-border-style">
                     <div className="table-responsive">
                       <table className="table table-hover">
                         <thead>
                           <tr>
+                            <th>Tipo de documento</th>
+                            <th>Documento</th>
                             <th>Nombre</th>
-                            <th>Cantidad</th>
-                            <th>Medida</th>
-                            <th>Existencia mínima</th>
-                            <th>Categoria</th>
+                            <th>Empresa</th>
+                            <th>Telefono</th>
+                            <th>Ciudad</th>
+                            <th>Email</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {visibleSupplies.map((supply) => (
-                            <tr key={supply.ID_Supplies}>
-                              <td>{supply.Name_Supplies}</td>
-                              <td>{supply.Unit}</td>
-                              <td>{supply.Measure}</td>
-                              <td>{supply.Stock}</td>
-                              <td>
-                                {supply.SuppliesCategory_ID
-                                  ? Category_supplies.find(
-                                    (category) =>
-                                      category.ID_SuppliesCategory ===
-                                      supply.SuppliesCategory_ID
-                                  )?.Name_SuppliesCategory || ''
-                                  : ''}
+                          {visibleUsers.map((supplierItem) => (
+                            <tr key={supplierItem.ID_Supplier}>
+                              <td>{supplierItem.Type_Document}</td>
+                              <td>{supplierItem.Document}</td>
+                              <td>{supplierItem.Name_Supplier}</td>
+                              <td>{supplierItem.Name_Business}</td>
+                              <td>{supplierItem.Phone}</td>
+                              <td>{supplierItem.City}</td>
+                              <td>{supplierItem.Email}</td>
+                              <td className={`${status}`}>
+                                {supplierItem.State ? "Habilitado" : "Deshabilitado"}
                               </td>
-                              <td style={{ maxWidth: '90px' }}>{supply.State ? 'Habilitado' : 'Deshabilitado'}</td>
-                              <td>
-                                <div style={{ alignItems: "center" }}>
+                              <td className="flex items-center">
+                                <button onClick={() => {
+                                  currentSupplierDataRef.current = {
+                                    ...currentSupplierDataRef.current,
+                                    email: supplierItem.Email,
+                                    document: supplierItem.Document
+                                  }
+                                }}>
 
-                                  <UpdateSupplies
+                                  <CreateSupplier
+                                    isDisabled={!supplierItem.State}
+                                    key={supplierItem.ID_Supplier}
+                                    onDefaultSubmit={(event, setOpen) =>
+                                      onUpdate(
+                                        event,
+                                        supplierItem.ID_Supplier,
+                                        setOpen
+                                      )
+                                    }
+                                    onOpen={(params) =>
+                                      onOpenComponent(
+                                        supplierItem.ID_Supplier,
+                                        params
+                                      )
+                                    }
                                     buttonProps={{
-                                      buttonClass: `ml-1 btn btn-icon btn-primary ${!supply.State ? "text-gray-400 cursor-not-allowed" : ""}`,
-                                      isDisabled: !supply.State,
-                                      buttonText: <BiEdit />,
+                                      buttonText: (
+                                        <i data-feather="thumbs-up" title="Presiona para editar el proveedor">
+                                          <BiEdit />
+                                        </i>
+                                      ),
+                                      buttonClass: "btn btn-icon btn-primary mr-1",
                                     }}
-                                    supplyToEdit={supply}
-                                    onUpdate={handleUpdateSupply}
+
+                                    whenSubmit={onSupplierChangeState}
+                                    beforeSubmit={beforeUpdate}
+                                  />
+                                </button>
+                                <div title="Presiona para eliminar el proveedor">
+                                  <DeleteSupplier
+                                    currentSupplier={supplierItem}
+                                    isDisabled={!supplierItem.State}
                                   />
 
-                                  <CreateLosses supply={supply} supplyUnit={supply.Unit} onLossCreated={handleLossCreated} />
-
-                                  <SeeLosses supply={supply} />
-
-                                  <button
-                                    onClick={() => handleDelete(supply)}
-                                    className={`ml-1 btn btn-icon btn-danger ${!supply.State ? "text-gray-400 cursor-not-allowed" : ""}`}
-                                    disabled={!supply.State}
-                                    title="Este botón sirve para eliminar el insumo."
-                                  >
-                                    <AiFillDelete />
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className={`ml-1 btn btn-icon btn-success ${supply.State ? "active" : "inactive"}`}
-                                    onClick={() => toggleSupplyStatus(supply.ID_Supplies)}
-                                    title="Este botón sirve para cambiar el estado del insumo."
-                                  >
-                                    {supply.State ? (
-                                      <MdToggleOn className={`estado-icon active`} />
-                                    ) : (
-                                      <MdToggleOff className={`estado-icon inactive`} />
-                                    )}
-                                  </button>
                                 </div>
+
+                                <button
+                                  type="button"
+                                  title='Presiona para inhabilitar o habilitar el proveedor'
+                                  className={`btn  btn-icon btn-success ml-1 ${status}`}
+                                  onClick={() => toggleSupplyStatus(supplierItem.ID_Supplier)}
+
+                                >
+                                  {supplierItem.State ? (
+                                    <MdToggleOn className={`estado-icon active${status}`} />
+                                  ) : (
+                                    <MdToggleOff className={`estado-icon inactive${status}`} />
+
+                                  )}
+                                </button>
                               </td>
                             </tr>
                           ))}
@@ -240,9 +295,10 @@ function SuppliesPage() {
           </div>
         </div>
       </div>
-
-
-      <div className="pagination-container pagination">
+      <div
+        className="pagination-container pagination"
+        title='Para moverse mas rapido por el modulo cuando hay varios registros en el sistema.'
+      >
         <Stack spacing={2}>
           <Pagination
             count={pageCount}
@@ -251,39 +307,18 @@ function SuppliesPage() {
             onChange={handlePageChange}
             variant="outlined"
             shape="rounded"
-            title="Este botón sirve para cambiar de página."
+
           />
         </Stack>
       </div>
 
-      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2, title: 'Muestra la pagina en la que se encuentra actualmente de las paginas en total que existen.' }}>
         <Typography variant="body2" color="text.secondary">
           Página {currentPage} de {pageCount}
         </Typography>
       </Box>
-
-      {isDeleteModalOpen && (
-        <DeleteSupplies
-          onClose={closeDeleteModal}
-          onDelete={() => {
-            if (selectedSupplyToDelete) {
-              deleteSupplies(selectedSupplyToDelete.ID_Supplies);
-              closeDeleteModal();
-            }
-          }}
-        />
-      )}
-
-      {selectedSupplyToUpdate && (
-        <UpdateSupplies
-          supplyToEdit={selectedSupplyToUpdate}
-          onUpdate={() => {
-            setSelectedSupplyToUpdate(null);
-          }}
-        />
-      )}
     </section>
   );
 }
 
-export default SuppliesPage;
+export default SupplierPage;

@@ -6,15 +6,12 @@ import { useUser } from '../Context/User.context';
 import { MdToggleOn, MdToggleOff } from "react-icons/md";
 import ShoppingView from '../Components/ShoppingView';
 import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
 import '../css/style.css';
 import "../css/landing.css";
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 function ShoppingPage() {
   const { getOneShopping, shopping: Shopping, selectAction, disableShopping, toggleStateShoppingByDate, getShopingByProvider } = useShoppingContext();
@@ -37,6 +34,7 @@ function ShoppingPage() {
     }
   }, [showEnabledOnly]);
 
+
   useLayoutEffect(() => {
     return async () => {
       const user = await getCurrentUser()
@@ -45,8 +43,6 @@ function ShoppingPage() {
       setCurrentUser(user)
     };
   }, []);
-
-  const status = Shopping.State ? "" : "desactivado";
 
   //función para mostrar solo los inhabilitados
 
@@ -107,7 +103,6 @@ function ShoppingPage() {
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
   };
-
 
   const generatePDF = () => {
     const tableBody = shoppingData?.map((shoppingItem) => {
@@ -205,13 +200,12 @@ function ShoppingPage() {
                         </button>
                       </Link>
 
-                      <button
-                        title='Presiona para generar el pdf'
-                        className="btn btn-outline-secondary p-2 ml-1" onClick={generatePDF}>Generar Reporte </button>
+                      <button title='Presiona para generar el pdf ' className="btn btn-outline-secondary p-2 ml-1" onClick={generatePDF}>Generar Reporte </button>
 
                     </div>
                     <div className="col-md-6">
                       <div className="form-group">
+
 
                         <input
                           type="search"
@@ -240,6 +234,7 @@ function ShoppingPage() {
                       Mostrar solo habilitados
                     </label>
                   </div>
+
                   <div className="card-body table-border-style">
                     <div className="table-responsive">
                       <table className="table table-hover">

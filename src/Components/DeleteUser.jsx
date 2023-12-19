@@ -1,27 +1,64 @@
-import React, { useState } from "react";
-import Box from "@mui/material/Box";
+import React from 'react';
+import '../css/style.css';
+
+const modalStyles = {
+  position: 'fixed',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  maxWidth: '80%',
+  width: '400px',
+  padding: '20px',
+  backgroundColor: 'white',
+  boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+  borderRadius: '4px',
+  textAlign: 'center',
+};
+
+const overlayStyles = {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+};
+
+const buttonStyles = {
+  marginTop: '80px',
+  width: '45%',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '10px',
+};
 
 function DeleteUser({ onClose, onDelete }) {
   return (
-    <div className="fixed inset-0 flex items-center justify-center">
-      <div className="modal-overlay" onClick={onClose}></div>
-      <div className="modal-container bg-white p-6 rounded shadow-md text-center">
-        <h1 className="text-3xl font-semibold ">Eliminar Usuario</h1>
-        <p className="deleteText">
-          {/* ¿Está seguro de que deseas eliminar este empleado? */}
-        </p>
-        <div className="flex justify-between">
+    <div style={overlayStyles} onClick={onClose}>
+      <div style={modalStyles}>
+        <h1 className="text-3xl font-semibold title-delete">Eliminar usuario</h1>
+        <p className="deleteText">¿Está seguro de que desea eliminar este usuario?</p>
+        <div className="flex justify-between flex-wrap buttons-columns">
           <button
             onClick={onDelete}
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+            style={buttonStyles}
+            className="btn btn-icon btn-danger button-column-one"
+            title="Este botón sirve para eliminar el insumo y cerrar la ventana modal."
           >
-            Eliminar
+            <span>Eliminar</span>
           </button>
           <button
             onClick={onClose}
-            className="bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-2 px-4 rounded"
+            style={buttonStyles}
+            className="btn btn-icon btn-primary"
+            title="Este botón sirve para cerrar la ventana modal sin eliminar el insumo."
           >
-            Cancelar
+            <span>Cancelar</span>
           </button>
         </div>
       </div>

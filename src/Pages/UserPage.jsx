@@ -35,15 +35,23 @@ function UserPage() {
     const [currentPage, setCurrentPage] = useState(1);
 
     useLayoutEffect(() => {
-        // getUsers();
-        getRoles(),
-        setCurrentPage(1);
-        return async () => {
-            const users = await getUsers();
+        getRoles();
+        const fetchData = async () => {
+            try {
+                const users = await getUsers();
 
-            setAllUsers(users)
-        }
+                setAllUsers(users)
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchData();
+        setCurrentPage(1);
     }, []);
+    useEffect(() => {
+        getRoles(),
+            getUsers();
+    })
 
     const navigateToCreateUser = () => {
         setIsModalOpen(true);

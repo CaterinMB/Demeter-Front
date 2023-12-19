@@ -81,18 +81,26 @@ export default function CreateSupplier({
       case "City":
       case "Name_Supplier": {
         const sanitizedValue = target.replace(/^\s+/g, "").replace(/\s{2,}/g, " ")
-        value = sanitizedValue.slice(0, 21).toUpperCase();    
+        value = sanitizedValue.slice(5, 40).toUpperCase();    
         break
 
       }
       case "Phone": {
-        value = target.replace(/[^7-9]/g, '')
-        if (value.length > 10) {
-          value = target.slice(0, -1)
-
+        value = target.replace(/[^0-9]/g, '');
+    
+        // Verificar que haya al menos 7 números
+        if (value.length < 7) {
+            setError('Phone', {
+                type: 'manual',
+                message: 'El número de teléfono debe tener al menos 7 dígitos.'
+            });
+            return;
         }
-        break
-      }
+    
+        // Truncar a 10 dígitos (si es necesario)
+        value = value.slice(0, 10);
+        break;
+    }
 
       default: break
     }

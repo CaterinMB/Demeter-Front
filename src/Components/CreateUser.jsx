@@ -144,7 +144,7 @@ function CreateUser({ onClose, onCreated }) {
     const options = role
     .filter(rol => rol.State)
     .map(rol => ({
-      value: rol.ID_User,
+      value: rol.ID_Role,
       label: rol.Name_Role,
     }));
 
@@ -303,13 +303,13 @@ function CreateUser({ onClose, onCreated }) {
                                             Rol: <strong>*</strong>
                                         </label>
                                         <Select
-                                            options={(selectedOption) => {
-                                                setSelectRol(selectedOption);
-                                                field.onChange
-                                            }}
-                                            {...register("Role_ID")}
+                                            options={options}
+                                            // {...register("Role_ID")}
                                             type='select'
-                                            onChange={options}
+                                            onChange={(selectedOption) => {
+                                                setSelectRol(selectedOption);
+                                                field.onChange(selectedOption);
+                                            }}
                                             value={selectRole}
                                             styles={customStyles}
                                             className='form-selects'

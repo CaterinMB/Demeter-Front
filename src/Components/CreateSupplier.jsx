@@ -86,7 +86,7 @@ export default function CreateSupplier({
 
       }
       case "Phone": {
-        value = target.replace(/[^0-9]/g, '')
+        value = target.replace(/[^7-9]/g, '')
         if (value.length > 10) {
           value = target.slice(0, -1)
 
@@ -300,7 +300,8 @@ export default function CreateSupplier({
                             pattern: {
                               value: /^[A-ZÁÉÍÓÚÑ][a-zA-Z\sáéíóúñ]*$/,
                               message:
-                                "La primera letra debe ser mayúscula"
+                              "No se permiten caracteres especiales"
+
                             }
                           })}
                           type="text"
@@ -326,7 +327,7 @@ export default function CreateSupplier({
                             pattern: {
                               value: /^[A-ZÁÉÍÓÚÑ][a-zA-Z\sáéíóúñ]*$/,
                               message:
-                                "La primera letra debe ser mayúscula y solo letras."
+                                "No se permiten caracteres especiales"
                             }
                           })}
                           type="text"
@@ -348,7 +349,10 @@ export default function CreateSupplier({
                         </label>
                         <input
                           {...register("Phone", {
-                            required: "El teléfono es requerido"
+                            required: "El teléfono es requerido", 
+                            pattern:{
+                              message: "Mínimo 7 números"
+                            }
                           })}
                           type="number"
                           className="form-control"

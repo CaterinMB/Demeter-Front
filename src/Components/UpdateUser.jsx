@@ -39,8 +39,8 @@ const customStyles = {
 };
 
 function UpdateUser({ onClose, userToEdit }) {
-        const { control, register, handleSubmit, formState: { errors, isValid }, setError, reset } = useForm({ defaultValues: userToEdit });
-        const { updateUser, user } = useUser();
+    const { register, handleSubmit, formState: { errors }, setError, clearErrors  } = useForm({ defaultValues: userToEdit });
+    const { updateUser, user } = useUser();
     const [selectedType, setSelectedType] = useState(userToEdit.Type_Document);
 
     const typeOptions = [
@@ -64,6 +64,8 @@ function UpdateUser({ onClose, userToEdit }) {
     }
 
     const onSubmit = handleSubmit(async (values) => {
+        clearErrors('Document');
+        
         // Validar tipo de documento
         switch (selectedType.value) {
             case 'CC':
@@ -128,7 +130,7 @@ function UpdateUser({ onClose, userToEdit }) {
         values.Name_User = capitalizeFirstLetter(values.Name_User.trim().toLowerCase());
         values.LastName_User = capitalizeFirstLetter(values.LastName_User.trim().toLowerCase());
 
-        values.Type_Document = selectedType;
+        values.Type_Document = selectedType.value;
 
         updateUser(userToEdit.ID_User, values);
         onClose();
@@ -225,7 +227,7 @@ function UpdateUser({ onClose, userToEdit }) {
                                         </label>
                                         <input
                                             {...register("LastName_User", {
-                                                required: 'El apellido es obligatorio', 
+                                                required: 'El apellido es obligatorio',
                                             })}
                                             type="text"
                                             placeholder='Apellido'
@@ -290,4 +292,4 @@ function UpdateUser({ onClose, userToEdit }) {
     )
 }
 
-export default UpdateUser
+export default UpdateUser;

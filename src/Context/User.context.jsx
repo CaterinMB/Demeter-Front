@@ -83,7 +83,6 @@ export const User = ({ children }) => {
       const res = await GetCurrentUser(user);
       return res.data
     } catch (error) {
-      console.log(error);
     }
 
     return {}

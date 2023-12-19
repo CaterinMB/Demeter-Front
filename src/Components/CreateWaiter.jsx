@@ -59,10 +59,10 @@ function CreateWaiter({ onClose, onCreated }) {
         const trimmedValue = value.trim();
 
         if (documentType === 'CC') {
-            if (!/^\d{8,12}$/.test(trimmedValue)) {
+            if (!/^\d{8,10}$/.test(trimmedValue)) {
                 setError('Document', {
                     type: 'manual',
-                    message: 'El número de documento no es válido. Debe tener entre 8 y 12 dígitos.'
+                    message: 'El número de documento no es válido. Debe tener entre 8 y 10 dígitos.'
                 });
                 return null;
             }

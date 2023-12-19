@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import { useForm, Controller } from 'react-hook-form';
 import { useUser } from '../Context/User.context.jsx';
 import { useRole } from '../Context/Role.context';
+import { useShoppingContext } from '../Context/Shopping.context';
 
 const style = {
     position: "fixed",
@@ -44,6 +45,7 @@ function CreateUser({ onClose, onCreated }) {
     const [selectedType, setSelectedType] = useState({ label: 'Seleccione tipo', value: '', isDisabled: true });
     const { role, getRoles } = useRole();
     const [selectRole, setSelectRol] = useState(null);
+    const { shopping } = useShoppingContext();
 
     const typeOptions = [
         { label: 'Seleccione tipo', value: '', isDisabled: true },
@@ -63,28 +65,19 @@ function CreateUser({ onClose, onCreated }) {
 
     const onSubmit = handleSubmit(async (values) => {
 
-        if (!selectedType || selectedType.value === '') {
-            setError('Type_Document', {
+        const isUserAssociatedWithPurchase = shopping.some(item => item.UserID === user.ID_User);
+        if (isUserAssociatedWithPurchase) {
+            setError('UserAssociatedWithPurchase', {
                 type: 'manual',
-                message: 'Debe seleccionar un tipo de documento.'
+                message: 'No se puede eliminar un usuario asociado a una compra.'
             });
             return;
         }
 
-        if (!selectRole || selectRole.value === '') {
-            setError('Role_ID', {
-                type: 'manual',
-                message: 'Debe seleccionar un rol.'
-            });
-            return;
-        }
-
-        // Validar y convertir el documento según el tipo seleccionado
+        // Validar tipo de documento
         switch (selectedType.value) {
             case 'CC':
-                // Validar que el documento tenga solo números y esté entre 8 y 10 dígitos
-                const ccRegex = /^[0-9]+$/;
-                if (!ccRegex.test(values.Document) || values.Document.length < 8 || values.Document.length > 10) {
+                if (!/^\d{8,10}$/.test(values.Document)) {
                     setError('Document', {
                         type: 'manual',
                         message: 'El número de documento no es válido. Debe tener entre 8 y 10 dígitos.'
@@ -93,21 +86,16 @@ function CreateUser({ onClose, onCreated }) {
                 }
                 break;
             case 'CE':
-                // Validar que el documento tenga solo números y sea menor a 12 dígitos
-                const ceRegex = /^[0-9]+$/;
-                if (!ceRegex.test(values.Document) || values.Document.length > 12) {
+                if (!/^\d{1,12}$/.test(values.Document)) {
                     setError('Document', {
                         type: 'manual',
-                        message: 'El número de documento no es válido. Debe tener menos de 12 dígitos.'
+                        message: 'El número de documento no es válido. Debe tener hasta 12 dígitos.'
                     });
                     return;
                 }
                 break;
             case 'PB':
-                // Convertir las letras a minúsculas y validar que el documento tenga 6 números seguidos por 3 letras
-                values.Document = values.Document.substring(0, 6) + values.Document.substring(6).toLowerCase();
-                const pbRegex = /^[0-9]{6}[a-z]{3}$/;
-                if (!pbRegex.test(values.Document)) {
+                if (!/^\d{6}[a-zA-Z]{3}$/.test(values.Document)) {
                     setError('Document', {
                         type: 'manual',
                         message: 'El número de documento no es válido. Debe tener 6 números seguidos por 3 letras.'
@@ -119,10 +107,36 @@ function CreateUser({ onClose, onCreated }) {
                 break;
         }
 
+        // Validar y convertir el nombre del usuario
+        if (!/^[A-ZÁÉÍÓÚÜÑa-záéíóúüñ\s]*$/.test(values.Name_User)) {
+            setError('Name_User', {
+                type: 'manual',
+                message: 'El nombre no es válido. Debe empezar con mayúscula y contener solo letras y espacios.'
+            });
+            return;
+        }
+
+        // Validar correo electrónico
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.Email)) {
+            setError('Email', {
+                type: 'manual',
+                message: 'La dirección de correo electrónico no es válida.'
+            });
+            return;
+        }
+
+        // Validar contraseña
+        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/.test(values.Password)) {
+            setError('Password', {
+                type: 'manual',
+                message: 'La contraseña debe tener entre 8 y 15 caracteres y contener al menos una mayúscula, una minúscula, un número y un carácter especial.'
+            });
+            return;
+        }
+
         // Capitalizar la primera letra de cada palabra
         values.Name_User = capitalizeFirstLetter(values.Name_User.trim().toLowerCase());
         values.LastName_User = capitalizeFirstLetter(values.LastName_User.trim().toLowerCase());
-
 
         values.Type_Document = selectedType.value;
         values.Role_ID = selectRole.value;
@@ -304,7 +318,6 @@ function CreateUser({ onClose, onCreated }) {
                                         </label>
                                         <Select
                                             options={options}
-                                            // {...register("Role_ID")}
                                             type='select'
                                             onChange={(selectedOption) => {
                                                 setSelectRol(selectedOption);
@@ -355,4 +368,4 @@ function CreateUser({ onClose, onCreated }) {
     )
 }
 
-export default CreateUser
+export default CreateUser;

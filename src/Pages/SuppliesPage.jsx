@@ -32,6 +32,7 @@ function SuppliesPage() {
 
   useLayoutEffect(() => {
     getSupplies();
+    console.log('Se actualizo todo por completo.')
   }, []);
 
   useEffect(() => {

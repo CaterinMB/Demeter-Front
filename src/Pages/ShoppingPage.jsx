@@ -5,8 +5,8 @@ import { useSupplier } from "../Context/Supplier.context";
 import { useUser } from '../Context/User.context';
 import { MdToggleOn, MdToggleOff } from "react-icons/md";
 import ShoppingView from '../Components/ShoppingView';
-// import pdfMake from 'pdfmake/build/pdfmake';
-// import pdfFonts from 'pdfmake/build/vfs_fonts';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
 import '../css/style.css';
 import "../css/landing.css";
 import Pagination from '@mui/material/Pagination';
@@ -14,11 +14,10 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
-// pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 function ShoppingPage() {
-  const { getOneShopping, shopping: Shopping, selectAction, disableShopping, getShopingByProvider } = useShoppingContext();
+  const { getOneShopping, shopping: Shopping, selectAction, disableShopping, toggleStateShoppingByDate, getShopingByProvider } = useShoppingContext();
   const [searchTerm, setSearchTerm] = useState("");
   const { getCurrentUser } = useUser();
   const [currentUser, setCurrentUser] = useState({})
@@ -29,8 +28,14 @@ function ShoppingPage() {
 
   useEffect(() => {
     localStorage.setItem("showEnabledOnly", showEnabledOnly);
-  }, [showEnabledOnly]);
 
+    return () => {
+      import("pdfmake/build/vfs_fonts")
+        .then(def => {
+          pdfMake.vfs = def.default?.pdfMake.vfs;
+        })
+    }
+  }, [showEnabledOnly]);
 
   useLayoutEffect(() => {
     return async () => {
@@ -104,78 +109,81 @@ function ShoppingPage() {
   };
 
 
-  // const generatePDF = () => {
-  //   const tableBody = shoppingData?.map((shoppingItem) => {
-  //     const {
-  //       ID_Shopping,
-  //       Datetime,
-  //       Total,
-  //       Invoice_Number,
-  //       Supplier: { Name_Supplier },
-  //     } = shoppingItem;
+  const generatePDF = () => {
+    const tableBody = shoppingData?.map((shoppingItem) => {
+      const {
+        ID_Shopping,
+        Datetime,
+        Total,
+        Invoice_Number,
+        Supplier: { Name_Supplier },
+      } = shoppingItem;
 
-  //     return [
-  //       { text: ID_Shopping, bold: true, alignment: 'center' },
-  //       { text: `${currentUser.Name_User} ${currentUser.LastName_User}`, alignment: 'center' }, // Agregar información del usuario
-  //       { text: Invoice_Number },
-  //       { text: Name_Supplier, alignment: 'center' },
-  //       { text: new Date(Datetime).toLocaleDateString(), alignment: 'center' },
-  //       { text: Total, alignment: 'center' },
+      return [
+        { text: ID_Shopping, bold: true, alignment: 'center' },
+        { text: `${currentUser.Name_User} ${currentUser.LastName_User}`, alignment: 'center' }, // Agregar información del usuario
+        { text: Invoice_Number },
+        { text: Name_Supplier, alignment: 'center' },
+        { text: new Date(Datetime).toLocaleDateString(), alignment: 'center' },
+        { text: Total, alignment: 'center' },
 
 
-  //     ];
-  //   });
+      ];
+    });
 
-  //   const documentDefinition = {
-  //     content: [
-  //       { text: 'Reporte de compras', fontSize: 16, margin: [0, 10, 0, 10] }, // Margen superior ajustado
-  //       {
-  //         table: {
-  //           headerRows: 1,
-  //           widths: ['auto', 'auto', 'auto', '*', 'auto', '*'], // Ajuste de anchos de columnas
-  //           body: [
-  //             [
-  //               'ID',
-  //               'Usuario',
-  //               'N. factura',
-  //               'Proveedor',
-  //               'Fecha',
-  //               'Total',
-  //             ],
-  //             ...tableBody,
-  //           ],
-  //         },
-  //         layout: {
-  //           defaultBorder: false, // Si no necesitas bordes en cada celda
-  //           fontSize: 12,
-  //           fillColor: (rowIndex) => (rowIndex % 2 === 0 ? '#CCCCCC' : null),
-  //           paddingTop: () => 5, // Espaciado superior de cada celda
-  //           paddingBottom: () => 5, // Espaciado inferior de cada celda
-  //         },
-  //       },
-  //     ],
-  //     styles: {
-  //       table: {
-  //         width: '100%',
-  //         margin: [0, 10, 0, 15], // Margen inferior ajustado para la tabla
-  //       },
-  //     },
-  //   };
+    const documentDefinition = {
+      content: [
+        { text: 'Reporte de compras', fontSize: 16, margin: [0, 10, 0, 10] }, // Margen superior ajustado
+        {
+          table: {
+            headerRows: 1,
+            widths: ['auto', 'auto', 'auto', '*', 'auto', '*'], // Ajuste de anchos de columnas
+            body: [
+              [
+                'ID',
+                'Usuario',
+                'N. factura',
+                'Proveedor',
+                'Fecha',
+                'Total',
+              ],
+              ...tableBody,
+            ],
+          },
+          layout: {
+            defaultBorder: false, // Si no necesitas bordes en cada celda
+            fontSize: 12,
+            fillColor: (rowIndex) => (rowIndex % 2 === 0 ? '#CCCCCC' : null),
+            paddingTop: () => 5, // Espaciado superior de cada celda
+            paddingBottom: () => 5, // Espaciado inferior de cada celda
+          },
+        },
+      ],
+      styles: {
+        table: {
+          width: '100%',
+          margin: [0, 10, 0, 15], // Margen inferior ajustado para la tabla
+        },
+      },
+    };
+    const pdfDoc = pdfMake.createPdf(documentDefinition);
+    pdfDoc.open();
+  };
 
-  //   pdfMake.createPdf(documentDefinition).download('shopping_report.pdf');
-  // };
+  const onToggleStateShoppingByDate = async (id, date, bool) => {
 
-  const handleDisableShopping = async (id) => {
-    const disabledShopping = await disableShopping(id)
+    const newBool = bool ? "false" : "true"
 
-    if (disabledShopping == null) return
+    const { isToggled } = await toggleStateShoppingByDate(date, newBool)
 
-    setShoppingData(prev =>
-      prev.map((data) =>
-        data.ID_Shopping === disabledShopping.ID_Shopping
-          ? { ...data, State: !data.State }
-          : data
-      ))
+    if (isToggled) {
+      setShoppingData(prev =>
+        prev.map((data) =>
+          data.ID_Shopping === id
+            ? { ...data, State: !data.State }
+            : data
+        ))
+    }
   }
 
   return (
@@ -197,10 +205,13 @@ function ShoppingPage() {
                         </button>
                       </Link>
 
+                      <button
+                        title='Presiona para generar el pdf'
+                        className="btn btn-outline-secondary p-2 ml-1" onClick={generatePDF}>Generar Reporte </button>
+
                     </div>
                     <div className="col-md-6">
                       <div className="form-group">
-
 
                         <input
                           type="search"
@@ -229,8 +240,6 @@ function ShoppingPage() {
                       Mostrar solo habilitados
                     </label>
                   </div>
-
-
                   <div className="card-body table-border-style">
                     <div className="table-responsive">
                       <table className="table table-hover">
@@ -265,7 +274,7 @@ function ShoppingPage() {
                               <td>{Invoice_Number}</td>
                               <td>{Name_Supplier}</td>
                               <td>{Total}</td>
-                              <td className={`${status}`}>
+                              <td className={`${State ? "" : "desactivado"}`}>
                                 {State ? "Habilitado" : "Deshabilitado"}
                               </td>
 
@@ -275,14 +284,14 @@ function ShoppingPage() {
                                 <button
                                   type="button"
                                   title='Presiona para inhabilitar o habilitar la compra'
-                                  className={`btn  btn-icon btn-success ${status}`}
-                                  onClick={() => handleDisableShopping(ID_Shopping)}
+                                  className={`btn  btn-icon btn-success ${State ? "" : "desactivado"}`}
+                                  onClick={() => onToggleStateShoppingByDate(ID_Shopping, Datetime, State)}
 
                                 >
                                   {State ? (
-                                    <MdToggleOn className={`estado-icon active${status}`} />
+                                    <MdToggleOn className={`estado-icon active${State ? "" : "desactivado"}`} />
                                   ) : (
-                                    <MdToggleOff className={`estado-icon inactive${status}`} />
+                                    <MdToggleOff className={`estado-icon inactive${State ? "" : "desactivado"}`} />
 
                                   )}
                                 </button>

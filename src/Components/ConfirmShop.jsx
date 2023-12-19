@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import { Link, useNavigate, useNavigation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 const style = {
@@ -25,9 +25,10 @@ function ConfirmShop({ onConfirm, data, ...onConfirmValues }) {
 
   const navigation = useNavigate()
 
-  const navigateToMainMenu = () => {
+  const navigateToMainShopping = () => {
     navigation("/shopping")
   }
+
   return (
     <div>
       <button className="btn btn-primary ml-2" onClick={handleOpen}>Confirmar compra</button>
@@ -42,12 +43,12 @@ function ConfirmShop({ onConfirm, data, ...onConfirmValues }) {
             ¿Estas seguro de confirmar la compra?
 
           </Typography>
-          <button className="bg-red-500 text-white font-bold py-2 px-4 rounded ml-5 mt-3 " {...onConfirmValues} onClick={() => onConfirm({ navigateToMainMenu, ...data, ...onConfirmValues })}>
+          <button className="bg-red-500 text-white font-bold py-2 px-4 rounded ml-5 mt-3 " {...onConfirmValues} onClick={() => onConfirm({ navigateToMainShopping, ...data, ...onConfirmValues })}>
             Confirmar
           </button>
 
 
-          <button onClick={handleClose} className="btn btn-danger bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-2 px-4 rounded m-3 j">
+          <button onClick={handleClose} className="bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-2 px-4 rounded m-3 j">
             Cancelar
           </button>
         </Box>

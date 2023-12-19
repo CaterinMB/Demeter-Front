@@ -185,13 +185,13 @@ function ProductPage() {
                                   >
                                     <BiEdit />
                                   </button>
-                                  <button
+                                  {/* <button
                                     onClick={() => handledelete(produc.ID_Product)}
                                     className={`ml-1 btn btn-icon btn-danger ${!produc.State ? "text-gray-400 cursor-not-allowed" : ""}`}
                                     disabled={!produc.State}
                                   >
                                     <AiFillDelete />
-                                  </button>
+                                  </button> */}
                                   <button
                                     type="button"
                                     className={`ml-1 btn btn-icon btn-success ${barraClass}`}

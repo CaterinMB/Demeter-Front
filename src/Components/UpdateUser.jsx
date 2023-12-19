@@ -25,8 +25,7 @@ function UpdateUser({ onClose, userToEdit }) {
 
     const typeOptions = [
         { label: 'Cédula de ciudadanía', value: 'CC' },
-        { label: 'Cédula de extranjería', value: 'CE' },
-        { label: 'Pasaporte', value: 'PB' },
+        { label: 'Cédula de extranjería', value: 'CE' }
     ];
 
     const customStyles = {

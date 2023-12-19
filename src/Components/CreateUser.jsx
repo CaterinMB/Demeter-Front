@@ -56,10 +56,6 @@ function CreateUser({ onClose, onCreated }) {
         getRoles();
     }, []);
 
-    const handleRolChange = (selectedOption) => {
-        setSelectRol(selectedOption);
-    };
-
     // Función para capitalizar la primera letra de cada palabra
     function capitalizeFirstLetter(string) {
         return string.replace(/\b\w/g, (match) => match.toUpperCase());
@@ -134,11 +130,23 @@ function CreateUser({ onClose, onCreated }) {
         createUser(values);
         onCreated();
         onClose();
+        setSelectRol(null);
+        setSelectedType(null);
     });
 
     const onCancel = () => {
         onClose();
+        reset();
+        setSelectRol(null);
+        setSelectedType(null);
     };
+
+    const options = role
+    .filter(rol => rol.State)
+    .map(rol => ({
+      value: rol.ID_User,
+      label: rol.Name_Role,
+    }));
 
     return (
         <Box sx={{ ...style, width: 600 }}>
@@ -295,13 +303,14 @@ function CreateUser({ onClose, onCreated }) {
                                             Rol: <strong>*</strong>
                                         </label>
                                         <Select
-                                            options={role.map((rol) => ({
-                                                value: rol.ID_Role,
-                                                label: rol.Name_Role,
-                                            }))}
+                                            options={(selectedOption) => {
+                                                setSelectRol(selectedOption);
+                                                field.onChange
+                                            }}
                                             {...register("Role_ID")}
+                                            type='select'
+                                            onChange={options}
                                             value={selectRole}
-                                            onChange={handleRolChange}
                                             styles={customStyles}
                                             className='form-selects'
                                             theme={(theme) => ({

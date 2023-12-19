@@ -65,34 +65,6 @@ function CreateWaiter({ onClose, onCreated }) {
             return;
         }
 
-        // Validar y convertir el documento según el tipo seleccionado
-        switch (selectedType.value) {
-            case 'CC':
-                // Validar que el documento tenga solo números y esté entre 8 y 10 dígitos
-                const ccRegex = /^[0-9]+$/;
-                if (!ccRegex.test(values.Document) || values.Document.length < 8 || values.Document.length > 10) {
-                    setError('Document', {
-                        type: 'manual',
-                        message: 'El número de documento no es válido. Debe tener entre 8 y 10 dígitos.'
-                    });
-                    return;
-                }
-                break;
-            case 'CE':
-                // Validar que el documento tenga solo números y sea menor a 12 dígitos
-                const ceRegex = /^[0-9]+$/;
-                if (!ceRegex.test(values.Document) || values.Document.length > 12) {
-                    setError('Document', {
-                        type: 'manual',
-                        message: 'El número de documento no es válido. Debe tener menos de 12 dígitos.'
-                    });
-                    return;
-                }
-                break;
-            default:
-                break;
-        }
-
         // Capitalizar la primera letra de cada palabra
         values.Name_User = capitalizeFirstLetter(values.Name_User.trim().toLowerCase());
         values.LastName_User = capitalizeFirstLetter(values.LastName_User.trim().toLowerCase());

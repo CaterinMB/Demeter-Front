@@ -25,8 +25,7 @@ function UpdateWaiter({ onClose, waiterToEdit }) {
 
     const typeOptions = [
         { label: 'Cédula de ciudadanía', value: 'CC' },
-        { label: 'Cédula de extranjería', value: 'CE' },
-        { label: 'Pasaporte', value: 'PB' },
+        { label: 'Cédula de extranjería', value: 'CE' }
     ];
 
     const customStyles = {
@@ -59,12 +58,8 @@ function UpdateWaiter({ onClose, waiterToEdit }) {
         console.log('Valores del formulario:', values);
         values.Type_Document = selectedType;
 
-        try {
-            await updateWaiter(waiterToEdit.ID_User, values);
-            onClose();  // Agrega esta línea para cerrar la ventana modal después de la actualización
-        } catch (error) {
-            console.error('Error al actualizar el mesero', error);
-        }
+        updateWaiter(waiterToEdit.ID_User, values);
+        onClose();
     });
 
     const onCancel = () => {

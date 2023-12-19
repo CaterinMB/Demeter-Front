@@ -65,39 +65,6 @@ function UpdateUser({ onClose, userToEdit }) {
 
     const onSubmit = handleSubmit(async (values) => {
         clearErrors('Document');
-        
-        // Validar tipo de documento
-        switch (selectedType.value) {
-            case 'CC':
-                if (!/^\d{8,10}$/.test(values.Document)) {
-                    setError('Document', {
-                        type: 'manual',
-                        message: 'El número de documento no es válido. Debe tener entre 8 y 10 dígitos.'
-                    });
-                    return;
-                }
-                break;
-            case 'CE':
-                if (!/^\d{1,12}$/.test(values.Document)) {
-                    setError('Document', {
-                        type: 'manual',
-                        message: 'El número de documento no es válido. Debe tener hasta 12 dígitos.'
-                    });
-                    return;
-                }
-                break;
-            case 'PB':
-                if (!/^\d{6}[a-zA-Z]{3}$/.test(values.Document)) {
-                    setError('Document', {
-                        type: 'manual',
-                        message: 'El número de documento no es válido. Debe tener 6 números seguidos por 3 letras.'
-                    });
-                    return;
-                }
-                break;
-            default:
-                break;
-        }
 
         // Validar y convertir el nombre del usuario
         if (!/^[A-ZÁÉÍÓÚÜÑa-záéíóúüñ\s]*$/.test(values.Name_User)) {

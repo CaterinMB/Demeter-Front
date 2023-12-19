@@ -240,6 +240,7 @@ function UpdateUser({ onClose, userToEdit }) {
                                         <button
                                             className="btn btn-primary mr-5"
                                             type="submit"
+                                            onClick={onCancel}
                                         >
                                             Guardar
                                         </button>

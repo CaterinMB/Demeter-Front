@@ -37,6 +37,7 @@ function WaiterPage() {
     const [currentPage, setCurrentPage] = useState(1);
 
     useLayoutEffect(() => {
+        getWaiters();
         const fetchData = async () => {
             try {
                 const users = await getWaiters();
@@ -97,7 +98,7 @@ function WaiterPage() {
         setShowEnabledOnly(!showEnabledOnly);
     };
 
-    const filteredWaiters = allWaiter.filter((waiter) => {
+    const filteredWaiters = user.filter((waiter) => {
         const { Type_Document, Document, Name_User, LastName_User, Restaurant } = waiter;
         const searchString = `${Type_Document} ${Document} ${Name_User} ${LastName_User} ${Restaurant}`.toLowerCase();
 
@@ -202,13 +203,13 @@ function WaiterPage() {
                                                             </td>
                                                             <td>
                                                                 <div style={{ display: "flex", alignItems: "center", padding: '3px' }}>
-                                                                    <button
+                                                                    {/* <button
                                                                         onClick={() => handleEdit(waiter)}
                                                                         className={`ml-1 btn btn-icon btn-primary ${!waiter.State ? "text-gray-400 cursor-not-allowed" : ""}`}
                                                                         disabled={!waiter.State}
                                                                     >
                                                                         <BiEdit />
-                                                                    </button>
+                                                                    </button> */}
                                                                     <button
                                                                         type="button"
                                                                         title="Cambiar el estado de un mesero."
@@ -274,14 +275,14 @@ function WaiterPage() {
                 </div>
             )}
 
-            {isEditModalOpen && (
+            {/* {isEditModalOpen && (
                 <div className="absolute inset-0 flex items-center justify-center z-50">
                     <div className="modal-overlay" onClick={() => setIsEditModalOpen(false)}></div>
                     <div className="modal-container">
                         <UpdateWaiter onClose={() => setIsEditModalOpen(false)} waiterToEdit={waiterToEdit} />
                     </div>
                 </div>
-            )}
+            )} */}
         </section>
     );
 }

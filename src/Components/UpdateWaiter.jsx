@@ -56,6 +56,7 @@ function UpdateWaiter({ onClose, waiterToEdit }) {
     }, [register, user, waiterToEdit.ID_User]);
 
     const onSubmit = handleSubmit(async (values) => {
+        console.log('Valores del formulario:', values);
         values.Type_Document = selectedType;
 
         try {

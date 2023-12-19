@@ -314,7 +314,7 @@ export const User = ({ children }) => {
   const updateWaiter = async (users) => {
     try {
       await updateWaiterRequest(users);
-      getUsers();
+      getWaiters();
     } catch (error) {
       console.error(error);
     }

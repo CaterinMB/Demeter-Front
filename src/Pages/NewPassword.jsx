@@ -28,17 +28,20 @@ function NewPassword() {
 	  };
 
 
-	const tokenRef = useRef(null)
+	  const tokenRef = useRef(null)
+	  const cookies = useRef(null)
+	  const onSubmit = handleSubmit(async data => {
+		  console.log(data);
+		  
+		  tokenRef.current = cookies.cookies.passwordToken;
+		  await NewPasswordd(tokenRef.current, data.Password, data.ConfirmPassword);
+	  });
+  
+	  const handleNewPassword = () => {
+		  NewPasswordd(tokenRef.current)
+	  }
+	  
 
-	const onSubmit = handleSubmit(async data => {
-		console.log(data)
-		await NewPasswordd(tokenRef.current, data.Password, data.ConfirmPassword);
-	});
-
-	const handleNewPassword = () => {
-		NewPasswordd(tokenRef.current)
-	}
-	
 
 	useLayoutEffect(() => {
 

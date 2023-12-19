@@ -45,7 +45,6 @@ function CreateUser({ onClose, onCreated }) {
     const [selectedType, setSelectedType] = useState({ label: 'Seleccione tipo', value: '', isDisabled: true });
     const { role, getRoles } = useRole();
     const [selectRole, setSelectRol] = useState(null);
-    const { shopping } = useShoppingContext();
 
     const typeOptions = [
         { label: 'Seleccione tipo', value: '', isDisabled: true },
@@ -64,16 +63,6 @@ function CreateUser({ onClose, onCreated }) {
     }
 
     const onSubmit = handleSubmit(async (values) => {
-
-        const isUserAssociatedWithPurchase = shopping.some(item => item.UserID === user.ID_User);
-        if (isUserAssociatedWithPurchase) {
-            setError('UserAssociatedWithPurchase', {
-                type: 'manual',
-                message: 'No se puede eliminar un usuario asociado a una compra.'
-            });
-            return;
-        }
-
         // Validar tipo de documento
         switch (selectedType.value) {
             case 'CC':
@@ -138,6 +127,7 @@ function CreateUser({ onClose, onCreated }) {
         values.Name_User = capitalizeFirstLetter(values.Name_User.trim().toLowerCase());
         values.LastName_User = capitalizeFirstLetter(values.LastName_User.trim().toLowerCase());
 
+
         values.Type_Document = selectedType.value;
         values.Role_ID = selectRole.value;
 
@@ -156,11 +146,11 @@ function CreateUser({ onClose, onCreated }) {
     };
 
     const options = role
-    .filter(rol => rol.State)
-    .map(rol => ({
-      value: rol.ID_Role,
-      label: rol.Name_Role,
-    }));
+        .filter(rol => rol.State)
+        .map(rol => ({
+            value: rol.ID_Role,
+            label: rol.Name_Role,
+        }));
 
     return (
         <Box sx={{ ...style, width: 600 }}>
@@ -180,7 +170,7 @@ function CreateUser({ onClose, onCreated }) {
                                             </label>
                                             <Controller
                                                 control={control}
-                                                name="ProductCategory_ID"
+                                                name="Type_Document"
                                                 rules={{ required: 'Este campo es obligatorio' }}
                                                 render={({ field }) => (
                                                     <Select

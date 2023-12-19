@@ -18,6 +18,26 @@ const style = {
     pb: 3
 };
 
+const customStyles = {
+    control: (provided, state) => ({
+        ...provided,
+        border: state.isFocused ? '1px solid #201E1E' : '1px solid #201E1E',
+        '&:hover': {
+            border: '1px solid #201E1E',
+        },
+    }),
+    option: (provided, state) => ({
+        ...provided,
+        backgroundColor: state.isSelected ? '#e36209' : state.isFocused ? '#e36209' : 'white',
+        color: state.isSelected ? 'white' : state.isFocused ? '#555' : '#201E1E',
+        '&:hover': {
+            backgroundColor: '#e36209',
+            color: 'white',
+        },
+        cursor: state.isDisabled ? 'not-allowed' : 'default',
+    }),
+};
+
 function UpdateUser({ onClose, userToEdit }) {
     const { register, handleSubmit, formState: { errors } } = useForm({ defaultValues: userToEdit });
     const { updateUser, user } = useUser();
@@ -25,28 +45,9 @@ function UpdateUser({ onClose, userToEdit }) {
 
     const typeOptions = [
         { label: 'Cédula de ciudadanía', value: 'CC' },
-        { label: 'Cédula de extranjería', value: 'CE' }
+        { label: 'Cédula de extranjería', value: 'CE' },
+        { label: 'Pasaporte', value: 'PB' },
     ];
-
-    const customStyles = {
-        control: (provided, state) => ({
-            ...provided,
-            border: state.isFocused ? '1px solid #201E1E' : '1px solid #201E1E',
-            '&:hover': {
-                border: '1px solid #201E1E',
-            },
-        }),
-        option: (provided, state) => ({
-            ...provided,
-            backgroundColor: state.isSelected ? '#e36209' : state.isFocused ? '#e36209' : 'white',
-            color: state.isSelected ? 'white' : state.isFocused ? '#555' : '#201E1E',
-            '&:hover': {
-                backgroundColor: '#e36209',
-                color: 'white',
-            },
-            cursor: state.isDisabled ? 'not-allowed' : 'default',
-        }),
-    };
 
     useLayoutEffect(() => {
         register('Document', {
@@ -57,7 +58,80 @@ function UpdateUser({ onClose, userToEdit }) {
         });
     }, [register, user, userToEdit.ID_User]);
 
+    useLayoutEffect(() => {
+        getRoles();
+    }, []);
+
+    // Función para capitalizar la primera letra de cada palabra
+    function capitalizeFirstLetter(string) {
+        return string.replace(/\b\w/g, (match) => match.toUpperCase());
+    }
+
     const onSubmit = handleSubmit(async (values) => {
+        // Validar tipo de documento
+        switch (selectedType.value) {
+            case 'CC':
+                if (!/^\d{8,10}$/.test(values.Document)) {
+                    setError('Document', {
+                        type: 'manual',
+                        message: 'El número de documento no es válido. Debe tener entre 8 y 10 dígitos.'
+                    });
+                    return;
+                }
+                break;
+            case 'CE':
+                if (!/^\d{1,12}$/.test(values.Document)) {
+                    setError('Document', {
+                        type: 'manual',
+                        message: 'El número de documento no es válido. Debe tener hasta 12 dígitos.'
+                    });
+                    return;
+                }
+                break;
+            case 'PB':
+                if (!/^\d{6}[a-zA-Z]{3}$/.test(values.Document)) {
+                    setError('Document', {
+                        type: 'manual',
+                        message: 'El número de documento no es válido. Debe tener 6 números seguidos por 3 letras.'
+                    });
+                    return;
+                }
+                break;
+            default:
+                break;
+        }
+
+        // Validar y convertir el nombre del usuario
+        if (!/^[A-ZÁÉÍÓÚÜÑa-záéíóúüñ\s]*$/.test(values.Name_User)) {
+            setError('Name_User', {
+                type: 'manual',
+                message: 'El nombre no es válido. Debe empezar con mayúscula y contener solo letras y espacios.'
+            });
+            return;
+        }
+
+        // Validar correo electrónico
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.Email)) {
+            setError('Email', {
+                type: 'manual',
+                message: 'La dirección de correo electrónico no es válida.'
+            });
+            return;
+        }
+
+        // Validar contraseña
+        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/.test(values.Password)) {
+            setError('Password', {
+                type: 'manual',
+                message: 'La contraseña debe tener entre 8 y 15 caracteres y contener al menos una mayúscula, una minúscula, un número y un carácter especial.'
+            });
+            return;
+        }
+
+        // Capitalizar la primera letra de cada palabra
+        values.Name_User = capitalizeFirstLetter(values.Name_User.trim().toLowerCase());
+        values.LastName_User = capitalizeFirstLetter(values.LastName_User.trim().toLowerCase());
+
         values.Type_Document = selectedType;
 
         updateUser(userToEdit.ID_User, values);

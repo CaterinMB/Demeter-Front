@@ -37,7 +37,6 @@ function WaiterPage() {
     const [currentPage, setCurrentPage] = useState(1);
 
     useLayoutEffect(() => {
-        getWaiters();
         const fetchData = async () => {
             try {
                 const users = await getWaiters();
@@ -98,7 +97,7 @@ function WaiterPage() {
         setShowEnabledOnly(!showEnabledOnly);
     };
 
-    const filteredWaiters = user.filter((waiter) => {
+    const filteredWaiters = allWaiter.filter((waiter) => {
         const { Type_Document, Document, Name_User, LastName_User, Restaurant } = waiter;
         const searchString = `${Type_Document} ${Document} ${Name_User} ${LastName_User} ${Restaurant}`.toLowerCase();
 

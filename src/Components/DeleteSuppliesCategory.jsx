@@ -6,7 +6,7 @@ const modalStyles = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  maxWidth: '80%',  
+  maxWidth: '80%',
   width: '400px',
   padding: '20px',
   backgroundColor: 'white',
@@ -31,10 +31,10 @@ const buttonStyles = {
   marginTop: '80px',
   width: '45%',
   display: 'flex',
-  flexDirection: 'column', 
+  flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
-  padding: '10px',  
+  padding: '10px',
 };
 
 const textStyles = {
@@ -48,12 +48,12 @@ if (window.innerWidth <= 500) {
 }
 
 function DeleteSuppliesCategory({ onClose, onDelete }) {
-  return (  
+  return (
     <div style={overlayStyles} onClick={onClose}>
       <div style={modalStyles}>
         <h1 className="text-3xl font-semibold" style={textStyles}>Eliminar categoría de insumo</h1>
         <p className="deleteText" style={textStyles}>¿Está seguro de que desea eliminar esta categoría?</p>
-        <div className="flex justify-between flex-wrap buttons-columns">  
+        <div className="flex justify-between flex-wrap buttons-columns">
           <button
             onClick={onDelete}
             style={buttonStyles}

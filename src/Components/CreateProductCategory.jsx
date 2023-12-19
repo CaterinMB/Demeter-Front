@@ -16,12 +16,12 @@ const style = {
     px: 4,
     pb: 3,
     '@media (max-width: 770px)': {
-      width: '50%',
+        width: '50%',
     },
     '@media (max-width: 410px)': {
-      width: '200px',
+        width: '200px',
     },
-  };
+};
 
 function CreateCategory_products({
     onDefaultSubmit = null,

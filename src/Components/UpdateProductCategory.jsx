@@ -17,10 +17,10 @@ const style = {
   pb: 3,
   '@media (max-width: 770px)': {
     width: '50%',
-},
-'@media (max-width: 410px)': {
+  },
+  '@media (max-width: 410px)': {
     width: '200px',
-},
+  },
 };
 
 function UpdateProductCategory({

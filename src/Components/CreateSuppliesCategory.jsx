@@ -188,4 +188,3 @@ function CreateCategory_supplies({
 }
 
 export default CreateCategory_supplies;
-

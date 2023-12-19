@@ -3,7 +3,7 @@ import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import { MdToggleOn, MdToggleOff } from "react-icons/md";
 import { useCategoryProducts } from '../Context/CategoryProducts.context.jsx';
-import { useProduct } from '../Context/Product.context.jsx';
+// import { useProduct } from '../Context/Product.context.jsx';
 import CreateProductCategory from "../Components/CreateProductCategory.jsx";
 import UpdateProductCategory from "../Components/UpdateProductCategory.jsx";
 import DeleteProductCategory from "../Components/DeleteProductCategory.jsx";
@@ -17,14 +17,14 @@ import "../css/landing.css";
 
 function ProductCategoryPage() {
   const { Category_products, getCategory_products, deleteCategory_products, toggleCategoryProductStatus } = useCategoryProducts();
-  const { Product } = useProduct();
+  // const { Product, getProduct } = useProduct();
   const [searchTerm, setSearchTerm] = useState("");
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedProductCategoryToDelete, setSelectedProductCategoryToDelete] = useState(null);
   const [selectedProductCategoryToUpdate, setSelectedProductCategoryToUpdate] = useState(null);
   const [showWarning, setShowWarning] = useState(false);
   const [showEnabledOnly, setShowEnabledOnly] = useState(
-    localStorage.getItem("showEnabledOnly") === "true"
+    localStorage.getItem("showEnabledOnlyProduct") === "true"
   );
   const ITEMS_PER_PAGE = 7;
   const [currentPage, setCurrentPage] = useState(1);
@@ -35,7 +35,7 @@ function ProductCategoryPage() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("showEnabledOnly", showEnabledOnly);
+    localStorage.setItem("showEnabledOnlyProduct", showEnabledOnly);
   }, [showEnabledOnly]);
 
   const handleSearchChange = (event) => {
@@ -46,13 +46,31 @@ function ProductCategoryPage() {
     setShowEnabledOnly(!showEnabledOnly);
   };
 
-  const filteredProductsCategory = Category_products.filter((productCategory) => {
-    const {
-      Name_ProductCategory,
-    } = productCategory;
-    const searchString =
-      `${Name_ProductCategory}`.toLowerCase();
-    return searchString.includes(searchTerm.toLowerCase());
+  const filteredProductsCategory = Category_products.filter((category) => {
+    const { Name_ProductCategory, State } = category;
+
+    if (showEnabledOnly) {
+
+      if (searchTerm.toLowerCase() !== 'deshabilitado') {
+
+        if (!State) {
+          return false;
+        }
+      }
+
+      return (
+        (State && searchTerm.toLowerCase() === 'habilitado') ||
+        `${Name_ProductCategory} ${State ? 'Habilitado' : 'Deshabilitado'}`
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
+      );
+    }
+
+    return (
+      `${Name_ProductCategory} ${State ? 'Habilitado' : 'Deshabilitado'}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    );
   });
 
   const enabledProductsCategory = filteredProductsCategory.filter((productCategory) => productCategory.State);
@@ -66,17 +84,10 @@ function ProductCategoryPage() {
   const visibleProductsCategory = sortedProductsCategory.slice(startIndex, endIndex);
 
   const handleDelete = async (productCategory) => {
-    const categoryID = productCategory.ID_ProductCategory;
+    setShowWarning(false);
+    setSelectedProductCategoryToDelete(productCategory);
+    setDeleteModalOpen(true);
 
-    const productInCategory = Product.filter((product) => product.ProductCategory_ID === categoryID);
-
-    if (productInCategory.length > 0) {
-      setShowWarning(true);
-    } else {
-      setShowWarning(false);
-      setSelectedProductCategoryToDelete(productCategory);
-      setDeleteModalOpen(true);
-    }
   };
 
 

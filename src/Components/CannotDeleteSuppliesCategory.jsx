@@ -6,7 +6,7 @@ const modalStyles = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    maxWidth: '80%',  
+    maxWidth: '80%',
     width: '400px',
     padding: '20px',
     backgroundColor: 'white',
@@ -31,10 +31,10 @@ const buttonStyles = {
     marginTop: '80px',
     width: '45%',
     display: 'flex',
-    flexDirection: 'column',  
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '10px',  
+    padding: '10px',
 };
 
 
@@ -44,7 +44,7 @@ function CannotDeleteCategory({ onClose, onDelete }) {
             <div style={modalStyles}>
                 <h1 className="text-3xl font-semibold title-delete">No se puede eliminar la categoría</h1>
                 <p className="deleteText">Esta categoría no se puede eliminar porque tiene insumos asociados.</p>
-                <div className="flex justify-between flex-wrap buttons-columns">  
+                <div className="flex justify-between flex-wrap buttons-columns">
                     <button
                         onClick={onClose}
                         style={buttonStyles}

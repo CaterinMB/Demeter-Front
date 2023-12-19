@@ -48,13 +48,31 @@ function SuppliesCategoryPage() {
     setShowEnabledOnly(!showEnabledOnly);
   };
 
-  const filteredSuppliesCategory = Category_supplies.filter((suppliesCategory) => {
-    const {
-      Name_SuppliesCategory,
-    } = suppliesCategory;
-    const searchString =
-      `${Name_SuppliesCategory}`.toLowerCase();
-    return searchString.includes(searchTerm.toLowerCase());
+  const filteredSuppliesCategory = Category_supplies.filter((category) => {
+    const { Name_SuppliesCategory, State } = category;
+
+    if (showEnabledOnly) {
+
+      if (searchTerm.toLowerCase() !== 'deshabilitado') {
+
+        if (!State) {
+          return false;
+        }
+      }
+
+      return (
+        (State && searchTerm.toLowerCase() === 'habilitado') ||
+        `${Name_SuppliesCategory} ${State ? 'Habilitado' : 'Deshabilitado'}`
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
+      );
+    }
+
+    return (
+      `${Name_SuppliesCategory} ${State ? 'Habilitado' : 'Deshabilitado'}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    );
   });
 
   const enabledSuppliesCategory = filteredSuppliesCategory.filter((suppliesCategory) => suppliesCategory.State);

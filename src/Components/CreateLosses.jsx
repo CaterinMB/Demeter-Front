@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useLosses } from '../Context/Losses.context';
 import { IoMdArrowDropdown } from 'react-icons/io';
 
+
 const style = {
     position: 'absolute',
     top: '50%',
@@ -18,7 +19,7 @@ const style = {
     pb: 2,
 };
 
-function CreateLosses({ supply, onLossCreated }) {
+function CreateLosses({ supply, supplyUnit, onLossCreated }) {
     const { createLoss } = useLosses();
     const [open, setOpen] = useState(false);
 
@@ -32,6 +33,15 @@ function CreateLosses({ supply, onLossCreated }) {
 
     const onSubmit = handleSubmit(async (values) => {
         try {
+            const parsedLosses = parseFloat(values.Unit);
+            const parsedSupply = parseFloat(supply.Unit);
+
+            if (isNaN(parsedLosses) || isNaN(parsedSupply) || parsedLosses > parsedSupply) {
+                // Mostrar mensaje de error
+                alert('La cantidad de pérdida no puede ser mayor que la cantidad de suministro.');
+                return;
+            }
+
             await createLoss({
                 ...values,
                 Supplies_ID: supply.ID_Supplies,
@@ -98,8 +108,14 @@ function CreateLosses({ supply, onLossCreated }) {
                                                     },
                                                     validRange: (value) => {
                                                         const parsedValue = parseFloat(value);
+                                                        const parsedUnit = parseFloat(supplyUnit);
+
                                                         if (parsedValue < 0 || parsedValue > 99999999) {
                                                             return 'La cantidad debe estar entre 0 y 99.999.999.';
+                                                        }
+
+                                                        if (parsedValue > parsedUnit) {
+                                                            return `No puede ser mayor que la cantidad disponible: ${parsedUnit}.`;
                                                         }
                                                     },
                                                 },

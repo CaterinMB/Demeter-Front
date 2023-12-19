@@ -58,10 +58,6 @@ function UpdateUser({ onClose, userToEdit }) {
         });
     }, [register, user, userToEdit.ID_User]);
 
-    useLayoutEffect(() => {
-        getRoles();
-    }, []);
-
     // Función para capitalizar la primera letra de cada palabra
     function capitalizeFirstLetter(string) {
         return string.replace(/\b\w/g, (match) => match.toUpperCase());

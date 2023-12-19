@@ -39,7 +39,7 @@ const customStyles = {
 };
 
 function UpdateUser({ onClose, userToEdit }) {
-    const { register, handleSubmit, formState: { errors } } = useForm({ defaultValues: userToEdit });
+    const { control, register, handleSubmit, formState: { errors, isValid }, setError, reset } = useForm();
     const { updateUser, user } = useUser();
     const [selectedType, setSelectedType] = useState(userToEdit.Type_Document);
 
@@ -225,7 +225,7 @@ function UpdateUser({ onClose, userToEdit }) {
                                         </label>
                                         <input
                                             {...register("LastName_User", {
-                                                required: 'El apellido es obligatorio',
+                                                required: 'El apellido es obligatorio', 
                                             })}
                                             type="text"
                                             placeholder='Apellido'

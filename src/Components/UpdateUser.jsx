@@ -186,18 +186,8 @@ function UpdateUser({ onClose, userToEdit }) {
                                         <input
                                             {...register("Document", {
                                                 required: "El documento es obligatorio",
-                                                validate: (value) => {
-                                                    const parsedValue = parseInt(value);
-                                                    if (
-                                                        isNaN(parsedValue) ||
-                                                        parsedValue < 10000000 ||
-                                                        parsedValue > 9999999999
-                                                    ) {
-                                                        return "El número no es valido, debe tener de 8 a 10 caracteres.";
-                                                    }
-                                                }
                                             })}
-                                            type="number"
+                                            type="text"
                                             placeholder='N° documento'
                                             className="form-control"
                                         />
@@ -217,11 +207,6 @@ function UpdateUser({ onClose, userToEdit }) {
                                         <input
                                             {...register("Name_User", {
                                                 required: "El nombre es obligatorio",
-                                                pattern: {
-                                                    value: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ\s]*[a-záéíóúñ]$/,
-                                                    message:
-                                                        "El nombre del mesero debe tener la primera letra en mayúscula y solo letras."
-                                                }
                                             })}
                                             type="text"
                                             placeholder='Nombre'
@@ -241,11 +226,6 @@ function UpdateUser({ onClose, userToEdit }) {
                                         <input
                                             {...register("LastName_User", {
                                                 required: 'El apellido es obligatorio',
-                                                pattern: {
-                                                    value: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ\s]*[a-záéíóúñ]$/,
-                                                    message:
-                                                        "El apellido del mesero debe tener la primera letra en mayúscula y solo letras."
-                                                }
                                             })}
                                             type="text"
                                             placeholder='Apellido'

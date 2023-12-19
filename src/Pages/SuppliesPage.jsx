@@ -6,7 +6,7 @@ import { useSupplies } from "../Context/Supplies.context.jsx";
 import { useCategorySupplies } from '../Context/CategorySupplies.context.jsx';
 import CreateSupplies from "../Components/CreateSupplies.jsx";
 import SeeLosses from "../Components/SeeLosses.jsx";
-import CreateLosses from '../Components/CreateLosses';
+import CreateLosses from '../Components/CreateLosses.jsx';
 import UpdateSupplies from "../Components/UpdateSupplies.jsx";
 import DeleteSupplies from "../Components/DeleteSupplies.jsx";
 import Pagination from '@mui/material/Pagination';
@@ -32,7 +32,6 @@ function SuppliesPage() {
 
   useLayoutEffect(() => {
     getSupplies();
-    console.log('Se actualizo todo por completo.')
   }, []);
 
   useEffect(() => {
@@ -51,15 +50,36 @@ function SuppliesPage() {
   const filteredSupplies = supplies.filter((supply) => {
     const {
       Name_Supplies,
+      State,
+      Unit,
+      Measure,
+      Stock,
     } = supply;
-    const searchString =
-      `${Name_Supplies}`.toLowerCase();
+
+    const supplyCategoryName = Category_supplies.find(
+      (category) => category.ID_SuppliesCategory === supply.SuppliesCategory_ID
+    )?.Name_SuppliesCategory.toLowerCase() || '';
+
+    const isEnabled = State && searchTerm.toLowerCase() !== 'deshabilitado';
 
     if (showEnabledOnly) {
-      return supply.State && searchString.includes(searchTerm.toLowerCase());
+
+      if (!isEnabled) {
+        return false;
+      }
+
+      return (
+        `${Name_Supplies} ${State ? 'Habilitado' : 'Deshabilitado'} ${Unit} ${Measure} ${Stock} ${supplyCategoryName}`
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
+      );
     }
 
-    return searchString.includes(searchTerm.toLowerCase());
+    return (
+      `${Name_Supplies} ${State ? 'Habilitado' : 'Deshabilitado'} ${Unit} ${Measure} ${Stock} ${supplyCategoryName}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    );
   });
 
   const enabledSupplies = filteredSupplies.filter((supply) => supply.State);
@@ -182,7 +202,7 @@ function SuppliesPage() {
                                     onUpdate={handleUpdateSupply}
                                   />
 
-                                  <CreateLosses supply={supply} onLossCreated={handleLossCreated} />
+                                  <CreateLosses supply={supply} supplyUnit={supply.Unit} onLossCreated={handleLossCreated} />
 
                                   <SeeLosses supply={supply} />
 

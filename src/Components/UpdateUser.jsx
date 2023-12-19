@@ -39,14 +39,14 @@ const customStyles = {
 };
 
 function UpdateUser({ onClose, userToEdit }) {
-    const { register, handleSubmit, formState: { errors }, setError, clearErrors, reset } = useForm({ defaultValues: userToEdit });
+    const { register, handleSubmit, formState: { errors } } = useForm({ defaultValues: userToEdit });
     const { updateUser, user } = useUser();
     const [selectedType, setSelectedType] = useState(userToEdit.Type_Document);
 
     const typeOptions = [
         { label: 'Cédula de ciudadanía', value: 'CC' },
         { label: 'Cédula de extranjería', value: 'CE' },
-        { label: 'Pasaporte', value: 'PB' },
+        { label: 'Pasaporte', value: 'PB' }
     ];
 
     useLayoutEffect(() => {
@@ -58,46 +58,8 @@ function UpdateUser({ onClose, userToEdit }) {
         });
     }, [register, user, userToEdit.ID_User]);
 
-    // Función para capitalizar la primera letra de cada palabra
-    function capitalizeFirstLetter(string) {
-        return string.replace(/\b\w/g, (match) => match.toUpperCase());
-    }
-
     const onSubmit = handleSubmit(async (values) => {
-        clearErrors('Document');
-
-        // Validar y convertir el nombre del usuario
-        if (!/^[A-ZÁÉÍÓÚÜÑa-záéíóúüñ\s]*$/.test(values.Name_User)) {
-            setError('Name_User', {
-                type: 'manual',
-                message: 'El nombre no es válido. Debe empezar con mayúscula y contener solo letras y espacios.'
-            });
-            return;
-        }
-
-        // Validar correo electrónico
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.Email)) {
-            setError('Email', {
-                type: 'manual',
-                message: 'La dirección de correo electrónico no es válida.'
-            });
-            return;
-        }
-
-        // Validar contraseña
-        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/.test(values.Password)) {
-            setError('Password', {
-                type: 'manual',
-                message: 'La contraseña debe tener entre 8 y 15 caracteres y contener al menos una mayúscula, una minúscula, un número y un carácter especial.'
-            });
-            return;
-        }
-
-        // Capitalizar la primera letra de cada palabra
-        values.Name_User = capitalizeFirstLetter(values.Name_User.trim().toLowerCase());
-        values.LastName_User = capitalizeFirstLetter(values.LastName_User.trim().toLowerCase());
-
-        values.Type_Document = selectedType.value;
+        values.Type_Document = selectedType;
 
         updateUser(userToEdit.ID_User, values);
         onClose();
@@ -105,8 +67,6 @@ function UpdateUser({ onClose, userToEdit }) {
 
     const onCancel = () => {
         onClose();
-        reset();
-        setSelectedType(null);
     };
 
     return (
@@ -158,7 +118,7 @@ function UpdateUser({ onClose, userToEdit }) {
                                             {...register("Document", {
                                                 required: "El documento es obligatorio",
                                             })}
-                                            type="text"
+                                            type="number"
                                             placeholder='N° documento'
                                             className="form-control"
                                         />
@@ -178,6 +138,25 @@ function UpdateUser({ onClose, userToEdit }) {
                                         <input
                                             {...register("Name_User", {
                                                 required: "El nombre es obligatorio",
+                                                pattern: {
+                                                    value: /^[A-Za-zÁÉÍÓÚÑáéíóúñ]+(\s[A-Za-zÁÉÍÓÚÑáéíóúñ]+)?$/,
+                                                    message:
+                                                        'Solo se permiten letras, tildes y hasta un espacio entre letras.',
+                                                },
+                                                minLength: {
+                                                    value: 3,
+                                                    message: 'El nombre debe tener al menos 3 caracteres.',
+                                                },
+                                                maxLength: {
+                                                    value: 30,
+                                                    message: 'El nombre no puede tener más de 30 caracteres.',
+                                                },
+                                                setValueAs: (value) =>
+                                                    value
+                                                        .trim()
+                                                        .replace(/\s+/g, ' ')
+                                                        .toLowerCase()
+                                                        .replace(/^(.)/, (match) => match.toUpperCase()),
                                             })}
                                             type="text"
                                             placeholder='Nombre'
@@ -197,6 +176,25 @@ function UpdateUser({ onClose, userToEdit }) {
                                         <input
                                             {...register("LastName_User", {
                                                 required: 'El apellido es obligatorio',
+                                                pattern: {
+                                                    value: /^[A-Za-zÁÉÍÓÚÑáéíóúñ]+(\s[A-Za-zÁÉÍÓÚÑáéíóúñ]+)?$/,
+                                                    message:
+                                                        'Solo se permiten letras, tildes y hasta un espacio entre letras.',
+                                                },
+                                                minLength: {
+                                                    value: 3,
+                                                    message: 'El nombre debe tener al menos 3 caracteres.',
+                                                },
+                                                maxLength: {
+                                                    value: 30,
+                                                    message: 'El nombre no puede tener más de 30 caracteres.',
+                                                },
+                                                setValueAs: (value) =>
+                                                    value
+                                                        .trim()
+                                                        .replace(/\s+/g, ' ')
+                                                        .toLowerCase()
+                                                        .replace(/^(.)/, (match) => match.toUpperCase()),
                                             })}
                                             type="text"
                                             placeholder='Apellido'
@@ -240,7 +238,6 @@ function UpdateUser({ onClose, userToEdit }) {
                                         <button
                                             className="btn btn-primary mr-5"
                                             type="submit"
-                                            onClick={onCancel}
                                         >
                                             Guardar
                                         </button>
@@ -262,4 +259,4 @@ function UpdateUser({ onClose, userToEdit }) {
     )
 }
 
-export default UpdateUser;
+export default UpdateUser

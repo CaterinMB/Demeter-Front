@@ -39,8 +39,8 @@ const customStyles = {
 };
 
 function UpdateUser({ onClose, userToEdit }) {
-    const { control, register, handleSubmit, formState: { errors, isValid }, setError, reset } = useForm();
-    const { updateUser, user } = useUser();
+        const { control, register, handleSubmit, formState: { errors, isValid }, setError, reset } = useForm({ defaultValues: userToEdit });
+        const { updateUser, user } = useUser();
     const [selectedType, setSelectedType] = useState(userToEdit.Type_Document);
 
     const typeOptions = [

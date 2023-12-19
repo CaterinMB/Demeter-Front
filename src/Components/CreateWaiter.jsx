@@ -47,7 +47,6 @@ function CreateWaiter({ onClose, onCreated }) {
         { label: 'Seleccione tipo', value: '', isDisabled: true },
         { label: 'Cédula de ciudadanía', value: 'CC' },
         { label: 'Cédula de extranjería', value: 'CE' },
-        { label: 'Pasaporte', value: 'PB' },
     ];
 
     // Función para capitalizar la primera letra de cada palabra
@@ -86,18 +85,6 @@ function CreateWaiter({ onClose, onCreated }) {
                     setError('Document', {
                         type: 'manual',
                         message: 'El número de documento no es válido. Debe tener menos de 12 dígitos.'
-                    });
-                    return;
-                }
-                break;
-            case 'PB':
-                // Convertir las letras a minúsculas y validar que el documento tenga 6 números seguidos por 3 letras
-                values.Document = values.Document.substring(0, 6) + values.Document.substring(6).toLowerCase();
-                const pbRegex = /^[0-9]{6}[a-z]{3}$/;
-                if (!pbRegex.test(values.Document)) {
-                    setError('Document', {
-                        type: 'manual',
-                        message: 'El número de documento no es válido. Debe tener 6 números seguidos por 3 letras.'
                     });
                     return;
                 }

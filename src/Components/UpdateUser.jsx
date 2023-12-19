@@ -105,6 +105,8 @@ function UpdateUser({ onClose, userToEdit }) {
 
     const onCancel = () => {
         onClose();
+        reset();
+        setSelectedType(null);
     };
 
     return (
